@@ -9,7 +9,9 @@
 - DDL: 2024.4.17(周三)**形策课时间**进行**小组讨论**,交流学习进程,以进一步安排后续任务
 
 - 相关学习资源
+[前端和后端的区别](https://zhuanlan.zhihu.com/p/83515211)
 [傻瓜式Android APP开发入门教程](https://www.runoob.com/w3cnote/android-app-develop-learning.html)
+
 
 ## 2024.4.7 项目启动
 - 主要任务: 
