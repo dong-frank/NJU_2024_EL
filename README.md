@@ -3,6 +3,7 @@
 ## 2024.4.10 学习阶段
 - 主要任务:
 - [ ] **全体成员**网上找教程学习安卓app的开发流程
+- [ ] **全体成员**学习java
 - [ ] **前端开发组成员**[饶东申,张珂铫,陆亭羽]开始学习安装app的前端开发
 - [ ] **api调用组**[饶东申]学习实践地图类api的调用
 - [ ] **后端开发组成员**[许立恒]进行寻图算法的尝试
@@ -11,8 +12,8 @@
 - 相关学习资源
 [前端和后端的区别](https://zhuanlan.zhihu.com/p/83515211)
 [傻瓜式Android APP开发入门教程](https://www.runoob.com/w3cnote/android-app-develop-learning.html)
-
-
+[Android Studio安装教程](https://blog.csdn.net/qq_38436214/article/details/105073213)
+[Android Studio汉化包下载](https://plugins.jetbrains.com/plugin/13710-chinese-simplified-language-pack----/versions)
 ## 2024.4.7 项目启动
 - 主要任务: 
 - [x] 确定**项目选题**
