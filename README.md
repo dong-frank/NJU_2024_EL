@@ -14,6 +14,8 @@
 [傻瓜式Android APP开发入门教程](https://www.runoob.com/w3cnote/android-app-develop-learning.html)
 [Android Studio安装教程](https://blog.csdn.net/qq_38436214/article/details/105073213)
 [Android Studio汉化包下载](https://plugins.jetbrains.com/plugin/13710-chinese-simplified-language-pack----/versions)
+[百度地图的api](https://lbsyun.baidu.com/faq/api?title=androidsdk)
+[百度地图全景api](https://lbsyun.baidu.com/faq/api?title=android-panosdk/guide/helloworld)
 ## 2024.4.7 项目启动
 - 主要任务: 
 - [x] 确定**项目选题**
