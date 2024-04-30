@@ -4,6 +4,7 @@
 
     <application
         android:name=".DemoApplication"
+
         android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,19 +25,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="sTA2IIiM9ah2yWeSQBIUl4pgbtlSjaAc" />
-    </application>
-    <!-- 访问网络，进行地图相关业务数据请求，包括地图数据，路线规划，POI检索等 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- 获取网络状态，根据网络状态切换进行数据请求网络转换 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <activity android:name=". PanoramaDemoActivityMain "
+            android:screenOrientation="sensor"
+            android:configChanges="orientation|keyboardHidden">
+        </activity>
 
-    <!-- 读取外置存储。如果开发者使用了so动态加载功能并且把so文件放在了外置存储区域，则需要申请该权限，否则不需要 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- 写外置存储。如果开发者使用了离线地图，并且数据写在外置存储区域，则需要申请该权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    </application>
+    <supports-screens android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:resizeable="true"
+        android:anyDensity="true"/>
+    <uses-sdk android:minSdkVersion="8" />
+    <meta-data android:name="com.baidu.lbsapi.API_KEY" android:value="sTA2IIiM9ah2yWeSQBIUl4pgbtlSjaAc" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
 
 </manifest>
