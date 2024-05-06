@@ -51,7 +51,12 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
             Log.d("MainActivity", "Introduce and go to IntroduceActivity")
         }
-
+        binding.setting.setOnClickListener {
+            Toast.makeText(this, "SETTING!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+            Log.d("MainActivity", "Setting and go to SettingActivity")
+        }
         binding.exit.setOnClickListener {
             Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
             finish()

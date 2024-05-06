@@ -17,7 +17,12 @@
         android:layout_height="wrap_content"
         android:text="INTRODUCE"
         />
-
+    <Button
+        android:id="@+id/setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SETTING"
+        />
     <Button
         android:id="@+id/exit"
         android:layout_width="match_parent"
