@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Where To Go</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_introduce">IntroduceActivity</string>
 </resources>

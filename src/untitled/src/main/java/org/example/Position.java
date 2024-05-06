@@ -37,7 +37,7 @@ public class Position {
     }
 
     public double distance(Position p){
-        //TODO:计算球面上两点坐标
+        //TODO:调用xlh的方法实现球面上两点的距离计算
         return 0.0;
     }
     public double direction(Position p){
