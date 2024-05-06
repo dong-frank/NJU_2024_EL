@@ -3,7 +3,20 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <EditText
+        android:id="@+id/user_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:hint="Enter your guess"
+        />
+    <!-- TODO:The following TextView is used to display the system output. -->
+    <TextView
+        android:id="@+id/system_output"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="System output"
+        />
     <Button
         android:id="@+id/back_launch"
         android:layout_width="match_parent"
