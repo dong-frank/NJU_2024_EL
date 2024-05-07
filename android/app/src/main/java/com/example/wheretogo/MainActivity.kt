@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,45 +22,51 @@ import com.example.wheretogo.ui.theme.WhereToGoTheme
  * MainActivity is the entry point of the app.
  * It is the first screen that the user sees when they launch the app.
     */
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.launch_layout)
-        Log.d("MainActivity", "draw launch layout")
-
-        val binding = LaunchLayoutBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        //TODO:主菜单按键处理
-
-        val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                //TODO:处理游戏结束后的数据
-                Log.d("MainActivity", "onGameActivityResult: ${data?.getStringExtra("result")}")
+class MainActivity : BaseActivity() {
+    /**
+     * 获取返回数据
+     */
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            1 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val returneddata = data?.getStringExtra("data_return")
+                    Log.d("MainActivity", "onActivityResult: $returneddata")
+                }
             }
         }
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val binding = LaunchLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        Log.d("MainActivity", "draw launch layout")
+
+
+
+
+        //TODO:主菜单按键处理
+
+
+
         binding.startGame.setOnClickListener {
-            Toast.makeText(this, "GAME START!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, GameActivity::class.java)
-            startForResult.launch(intent)
+            GameActivity.actionStart(this, "data1", "data2")//启动游戏界面,data1和data2是传入的数据
             Log.d("MainActivity", "Game Start and go to GameActivity")
         }
 
         binding.introduce.setOnClickListener {
-            Toast.makeText(this, "INTRODUCE!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, IntroduceActivity::class.java)
-            startActivity(intent)
+            IntroduceActivity.actionStart(this, "data1", "data2")//启动介绍界面,data1和data2是传入的数据
             Log.d("MainActivity", "Introduce and go to IntroduceActivity")
         }
         binding.setting.setOnClickListener {
-            Toast.makeText(this, "SETTING!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, SettingActivity::class.java)
-            startActivity(intent)
+            SettingActivity.actionStart(this, "data1", "data2")//启动设置界面,data1和data2是传入的数据
             Log.d("MainActivity", "Setting and go to SettingActivity")
         }
         binding.exit.setOnClickListener {
             Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
-            finish()
+            ActivityCollector.finishAll()
             Log.d("MainActivity", "Exit")
         }
     }
