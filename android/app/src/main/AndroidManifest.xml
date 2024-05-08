@@ -14,6 +14,11 @@
         android:theme="@style/Theme.WhereToGo"
         tools:targetApi="31">
         <activity
+            android:name=".MapActivity"
+            android:exported="false"
+            android:label="@string/title_activity_map"
+            android:theme="@style/Theme.WhereToGo" />
+        <activity
             android:name=".SettingActivity"
             android:exported="false"
             android:label="@string/title_activity_setting"
@@ -39,6 +44,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="sTA2IIiM9ah2yWeSQBIUl4pgbtlSjaAc" />
+
     </application>
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:ignore="ManifestOrder" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

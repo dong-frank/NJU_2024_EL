@@ -2,8 +2,10 @@ package com.example.wheretogo
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import com.example.wheretogo.databinding.LaunchLayoutBinding
 import com.example.wheretogo.ui.theme.WhereToGoTheme
 /**
@@ -38,6 +41,7 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = LaunchLayoutBinding.inflate(layoutInflater)
@@ -45,10 +49,7 @@ class MainActivity : BaseActivity() {
         Log.d("MainActivity", "draw launch layout")
 
 
-
-
         //TODO:主菜单按键处理
-
 
 
         binding.startGame.setOnClickListener {
@@ -70,5 +71,4 @@ class MainActivity : BaseActivity() {
             Log.d("MainActivity", "Exit")
         }
     }
-
 }

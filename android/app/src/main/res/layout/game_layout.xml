@@ -3,6 +3,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <com.example.wheretogo.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <EditText
         android:id="@+id/user_input"
         android:layout_width="match_parent"

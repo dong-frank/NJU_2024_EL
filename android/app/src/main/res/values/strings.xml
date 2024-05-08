@@ -3,4 +3,5 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="title_activity_introduce">IntroduceActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_map">MapActivity</string>
 </resources>
