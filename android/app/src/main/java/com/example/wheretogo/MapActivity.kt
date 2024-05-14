@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import com.baidu.lbsapi.BMapManager
 import com.baidu.lbsapi.panoramaview.*
 
@@ -21,6 +24,10 @@ class MapActivity : BaseActivity() {
     }
     var mBmapManager: BMapManager? = null
     var mPanaView: PanoramaView? = null
+    var editText: EditText? = null
+    var textView: TextView? = null
+    lateinit var inputPlaceName : String
+    lateinit var pid : Number
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.map_layout)
@@ -29,9 +36,26 @@ class MapActivity : BaseActivity() {
         if (intent != null) {
             testPanoByType(intent.getIntExtra("type", -1))
         }
+
+        editText?.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                inputPlaceName = v.text.toString()
+                textView?.text=inputPlaceName
+                Log.i(MapActivity.toString(), textView?.text.toString())
+                true
+            } else {
+                false
+            }
+        }
+        //输入地名转换为相关坐标
+        CoordinateTool.nameToPid(inputPlaceName)
+        //根据坐标显示全景图
+        PanaTool.changePanaView(pid)
     }
     private fun initView() {
         mPanaView = findViewById<View>(R.id.panorama) as PanoramaView
+        editText = findViewById<EditText>(R.id.panodemo_main_input)
+        textView = findViewById<TextView>(R.id.panodemo_main_output)
     }
     private fun testPanoByType(type : Int) {
         mPanaView?.setShowTopoLink(true)
