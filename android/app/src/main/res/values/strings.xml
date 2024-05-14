@@ -4,4 +4,7 @@
     <string name="title_activity_introduce">IntroduceActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_testactivity">testactivity</string>
+    <string name="title_activity_present_map">PresentMapActivity</string>
+    <string name="title_activity_pano_map">PanoMapActivity</string>
 </resources>

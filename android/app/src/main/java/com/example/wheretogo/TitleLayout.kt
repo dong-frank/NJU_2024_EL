@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.example.wheretogo.R
 
 class TitleLayout(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
     init {
@@ -22,6 +21,7 @@ class TitleLayout(context: Context, attrs: AttributeSet) : LinearLayout(context,
             "SettingActivity" -> titleText.text = "Setting"
             "IntroduceActivity" -> titleText.text = "Introduce"
             "GameActivity" -> titleText.text = "Game"
+            "MapActivity" -> titleText.text = "Map"
         }
 
         titleBack.setOnClickListener {

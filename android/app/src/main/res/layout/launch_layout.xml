@@ -28,15 +28,21 @@
         android:text="INTRODUCE"
         />
     <Button
-        android:id="@+id/setting"
+        android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SETTING"
+        android:text="MAP"
         />
     <Button
         android:id="@+id/exit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="EXIT"
+        />
+    <Button
+        android:id="@+id/request_permission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Permission request"
         />
 </LinearLayout>

@@ -1,18 +1,33 @@
+import org.jetbrains.kotlin.cli.jvm.main
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("C:\\Users\\Frank\\.android\\debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+        create("release") {
+            storeFile = file("D:\\android_key\\wheretogo_released_key.jks")
+            storePassword = "rds364408"
+            keyAlias = "key0"
+            keyPassword = "rds364408"
+        }
+    }
     namespace = "com.example.wheretogo"
     compileSdk = 34
 
     buildFeatures{
         viewBinding=true
     }
-
     defaultConfig {
-        applicationId = "com.example.wheretogo"
+        applicationId = "shushu.wheretogo"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
@@ -23,9 +38,15 @@ android {
             useSupportLibrary = true
         }
     }
-
+    sourceSets {
+        getByName("main") {
+            jniLibs.setSrcDirs(listOf("src/main/jniLibs"))
+        }
+    }
     buildTypes {
         release {
+            //引用正式签名
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -65,6 +86,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
     implementation(files("libs/BaiduLBS_Android.jar"))
+    implementation(files("libs/BaiduPanoSdk.aar"))
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(files("D:\\NJU_2024_EL\\android\\app\\libs\\BaiduLBS_Android.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
