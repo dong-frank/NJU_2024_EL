@@ -28,6 +28,7 @@ class MapActivity : BaseActivity() {
     var textView: TextView? = null
     lateinit var inputPlaceName : String
     lateinit var pid : Number
+    var inputPoint : Point? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.map_layout)
@@ -40,7 +41,7 @@ class MapActivity : BaseActivity() {
         editText?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 inputPlaceName = v.text.toString()
-                textView?.text=inputPlaceName
+//                textView?.text=inputPlaceName
                 Log.i(MapActivity.toString(), textView?.text.toString())
                 true
             } else {
@@ -48,9 +49,11 @@ class MapActivity : BaseActivity() {
             }
         }
         //输入地名转换为相关坐标
-        CoordinateTool.nameToPid(inputPlaceName)
+        inputPoint = CoordinateTool.nameToPid(inputPlaceName)
+
+        textView?.text = inputPoint!!.point.toString()
         //根据坐标显示全景图
-        PanaTool.changePanaView(pid)
+//        PanaTool.changePanaView(pid)
     }
     private fun initView() {
         mPanaView = findViewById<View>(R.id.panorama) as PanoramaView
