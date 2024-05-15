@@ -85,7 +85,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
-    implementation(files("libs/BaiduLBS_Android.jar"))
     implementation(files("libs/BaiduPanoSdk.aar"))
     implementation(files("libs/BaiduLBS_Android.aar"))
     implementation ("com.squareup.okhttp3:okhttp:4.12.0")

@@ -15,13 +15,13 @@ object CoordinateTool {
         var mCoder = GeoCoder.newInstance()
         var lat = 0.0
         var lon = 0.0
-        var listener = object : OnGetGeoCoderResultListener{
+        var listener = object : OnGetGeoCoderResultListener {
             override fun onGetGeoCodeResult(geoCodeResult: GeoCodeResult) {
-                if (null!=geoCodeResult && null != geoCodeResult.getLocation()){
-                    if(geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR){
+                if (null != geoCodeResult && null != geoCodeResult.getLocation()) {
+                    if (geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
                         //没有检索到结果
                         return;
-                    }else{
+                    } else {
                         //获取地理编码结果
                         lat = geoCodeResult.location.latitude
                         lon = geoCodeResult.location.longitude
@@ -32,7 +32,7 @@ object CoordinateTool {
             }
 
             override fun onGetReverseGeoCodeResult(p0: ReverseGeoCodeResult?) {
-                if (p0  == null || p0.error != SearchResult.ERRORNO.NO_ERROR) {
+                if (p0 == null || p0.error != SearchResult.ERRORNO.NO_ERROR) {
                     //没有找到检索结果
                     return;
                 } else {
@@ -46,20 +46,29 @@ object CoordinateTool {
         mCoder.setOnGetGeoCodeResultListener(listener)
         mCoder.geocode(
             GeoCodeOption()
-                .city(name.split(" ")[0])
-                .address(name.split(" ")[1])
+                .city("北京")
+                .address("北京市海淀区上地十街10号")
         )
         mCoder.destroy()
         return Point(lat, lon)
     }
+        fun nameToPoint(name: String): Number {
+            return 1
+        }
 
-    fun wsgToBd(point: Point): com.baidu.lbsapi.tools.Point? {
-        return CoordinateConverter.converter(CoordinateConverter.COOR_TYPE.COOR_TYPE_WGS84,point)
+        fun wsgToBd(point: Point): com.baidu.lbsapi.tools.Point? {
+            return CoordinateConverter.converter(
+                CoordinateConverter.COOR_TYPE.COOR_TYPE_WGS84,
+                point
+            )
+        }
+
+        fun gcjToBd(point: Point): com.baidu.lbsapi.tools.Point? {
+            return CoordinateConverter.converter(
+                CoordinateConverter.COOR_TYPE.COOR_TYPE_GCJ02,
+                point
+            )
+        }
+
+
     }
-
-    fun gcjToBd(point: Point): com.baidu.lbsapi.tools.Point? {
-        return CoordinateConverter.converter(CoordinateConverter.COOR_TYPE.COOR_TYPE_GCJ02,point)
-    }
-
-
-}

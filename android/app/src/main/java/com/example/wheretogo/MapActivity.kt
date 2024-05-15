@@ -26,8 +26,8 @@ class MapActivity : BaseActivity() {
     var mPanaView: PanoramaView? = null
     var editText: EditText? = null
     var textView: TextView? = null
-    lateinit var inputPlaceName : String
-    lateinit var pid : Number
+    var inputPlaceName : String = "北京 北京市海淀区上地十街10号"
+    var pid : Number? = null
     var inputPoint : Point? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +41,9 @@ class MapActivity : BaseActivity() {
         editText?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 inputPlaceName = v.text.toString()
-//                textView?.text=inputPlaceName
+                editText!!.text.clear()
+                inputPoint = inputPlaceName.let { CoordinateTool.nameToPid(it) }
+//                textView?.text= inputPoint!!.point.toString()
                 Log.i(MapActivity.toString(), textView?.text.toString())
                 true
             } else {
@@ -49,9 +51,9 @@ class MapActivity : BaseActivity() {
             }
         }
         //输入地名转换为相关坐标
-        inputPoint = CoordinateTool.nameToPid(inputPlaceName)
 
-        textView?.text = inputPoint!!.point.toString()
+
+//        CoordinateTool.nameToPid(inputPlaceName)
         //根据坐标显示全景图
 //        PanaTool.changePanaView(pid)
     }
