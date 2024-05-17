@@ -9,6 +9,8 @@ import com.baidu.mapapi.SDKInitializer
 open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SDKInitializer.setAgreePrivacy(applicationContext,true)
+        SDKInitializer.initialize(applicationContext)
 
 
         Log.d("BaseActivity", javaClass.simpleName)

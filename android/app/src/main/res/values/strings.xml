@@ -7,4 +7,8 @@
     <string name="title_activity_testactivity">testactivity</string>
     <string name="title_activity_present_map">PresentMapActivity</string>
     <string name="title_activity_pano_map">PanoMapActivity</string>
+
+    <string name="privacy_exit">退出</string>
+    <string name="privacy_agree">同意</string>
+    <string name="title_activity_pravicy">PravicyActivity</string>
 </resources>

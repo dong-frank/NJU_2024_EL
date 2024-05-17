@@ -1,20 +1,33 @@
 package com.example.wheretogo
 
 import android.Manifest
+import android.R
 import android.app.Activity
-import android.app.Application
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.baidu.lbsapi.BMapManager
 import com.baidu.lbsapi.MKGeneralListener
 import com.example.wheretogo.databinding.LaunchLayoutBinding
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.UnsupportedEncodingException
+
 
 /**
  * MainActivity is the entry point of the app.
@@ -39,20 +52,22 @@ class MainActivity : BaseActivity() {
             }
         }
     }
-
+    var dialog: Dialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = LaunchLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d("MainActivity", "draw launch layout")
 
-        btnPrivacy = findViewById<View>(R.id.request_permission) as Button
+        PravicyCheck()
+
+        btnPrivacy = findViewById<View>(com.example.wheretogo.R.id.request_permission) as Button
         btnPrivacy!!.tag = false
         //TODO:主菜单按键处理
 
 
         binding.startGame.setOnClickListener {
-            GameActivity.actionStart(this, "data1", "data2")//启动游戏界面,data1和data2是传入的数据
+            GameMapActivity.actionStart(this, "data1", "data2")//启动游戏界面,data1和data2是传入的数据
             Log.d("MainActivity", "Game Start and go to GameActivity")
         }
 
@@ -60,10 +75,9 @@ class MainActivity : BaseActivity() {
             IntroduceActivity.actionStart(this, "data1", "data2")//启动介绍界面,data1和data2是传入的数据
             Log.d("MainActivity", "Introduce and go to IntroduceActivity")
         }
-        binding.map.setOnClickListener {
-            intent = Intent(this, MapActivity::class.java)
-            startActivity(intent)
-            Log.d("MainActivity", "Setting and go to PresentMapActivity")
+        binding.setting.setOnClickListener {
+            SettingActivity.actionStart(this, "data1", "data2")//启动设置界面,data1和data2是传入的数据
+            Log.d("MainActivity", "Setting and go to SettingActivity")
         }
         binding.exit.setOnClickListener {
             Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
@@ -74,9 +88,88 @@ class MainActivity : BaseActivity() {
             //TODO:权限申请和初始化
             initMap()
             requestPermission()
-//            MapActivity.actionStart(this, "data1", "data2")//启动地图界面,data1和data2是传入的数据
         }
 
+    }
+    @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
+    fun onClickAgree(v: View?) {
+        //TODO:权限申请和初始化
+        initMap()
+        requestPermission()
+        dialog!!.dismiss()
+        //下面将已阅读标志写入文件，再次启动的时候判断是否显示。
+        getSharedPreferences("file", MODE_PRIVATE).edit()
+            .putBoolean("AGREE", true)
+            .apply()
+    }
+
+    fun onClickDisagree(v: View?) {
+        System.exit(0) //退出软件
+    }
+
+    fun showPrivacy(privacyFileName: String?) {
+        val str = initAssets(privacyFileName)
+        val inflate : View = LayoutInflater.from(this@MainActivity).inflate(com.example.wheretogo.R.layout.dialog_privacy_show, null)
+        val tv_title = inflate.findViewById<View>(com.example.wheretogo.R.id.tv_title) as TextView
+        tv_title.text = "隐私政策授权提示"
+        val tv_content = inflate.findViewById<View>(com.example.wheretogo.R.id.tv_content) as TextView
+        tv_content.text = str
+        dialog = AlertDialog.Builder(this@MainActivity)
+            .setView(inflate)
+            .show()
+        // 通过WindowManager获取
+        val dm = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(dm)
+        val params = dialog!!.window!!.attributes
+        params.width = dm.widthPixels * 4 / 5
+        params.height = dm.heightPixels * 1 / 2
+        dialog!!.setCancelable(false) //屏蔽返回键
+        dialog!!.window!!.setAttributes(params)
+        dialog!!.window!!.setBackgroundDrawableResource(R.color.transparent)
+    }
+
+    /**
+     * 从assets下的txt文件中读取数据
+     */
+    fun initAssets(fileName: String?): String? {
+        var str: String? = null
+        try {
+            val inputStream = assets.open(fileName!!)
+            str = getString(inputStream)
+        } catch (e1: IOException) {
+            e1.printStackTrace()
+        }
+        return str
+    }
+
+    fun getString(inputStream: InputStream?): String {
+        var inputStreamReader: InputStreamReader? = null
+        try {
+            inputStreamReader = InputStreamReader(inputStream, "UTF-8")
+        } catch (e1: UnsupportedEncodingException) {
+            e1.printStackTrace()
+        }
+        val reader = BufferedReader(inputStreamReader)
+        val sb = StringBuffer("")
+        var line: String?
+        try {
+            while (reader.readLine().also { line = it } != null) {
+                sb.append(line)
+                sb.append("\n")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return sb.toString()
+    }
+
+    fun PravicyCheck() {
+        val status = getSharedPreferences("file", MODE_PRIVATE)
+            .getBoolean("AGREE", false)
+        if (status != true) {
+        } else {
+            showPrivacy("privacy.txt") //放在assets目录下的隐私政策文本文件
+        }
     }
     override fun onResume() {
         super.onResume()
