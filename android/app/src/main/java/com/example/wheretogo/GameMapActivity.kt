@@ -16,16 +16,18 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import com.baidu.lbsapi.BMapManager
+import com.baidu.lbsapi.panoramaview.PanoramaRequest
 import com.baidu.lbsapi.panoramaview.PanoramaView
 import com.baidu.lbsapi.panoramaview.PanoramaViewListener
+import com.baidu.mapapi.model.CoordUtil.getDistance
 import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.geocode.GeoCodeResult
 import com.baidu.mapapi.search.sug.SuggestionResult
 import com.baidu.mapapi.search.sug.SuggestionSearch
+import com.baidu.mshield.x0.EngineImpl.mContext
 import com.example.wheretogo.PanaTool.getGuessPoint
 import com.example.wheretogo.PanaTool.getTargetPoint
 import com.example.wheretogo.PanaTool.sugSearch
-import com.baidu.mapapi.model.CoordUtil.getDistance
 import com.baidu.lbsapi.tools.Point as Point1
 import com.baidu.platform.comapi.basestruct.Point as Point2
 
@@ -57,6 +59,7 @@ class GameMapActivity : BaseActivity() {
     var dtDistance : Double = 0.0
     var targetPoint : Point1? = null
     var guessPoint : Point1? = null
+    var panoramaRequest : PanoramaRequest? = null
     @SuppressLint("SetTextI18n", "ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,6 +188,8 @@ class GameMapActivity : BaseActivity() {
         })
         mPanaView?.setPanoramaImageLevel(PanoramaView.ImageDefinition.ImageDefinitionHigh)
         val pid = "0100220000130817164838355J5"
+        val uid = "bff8fa7deabc06b9c9213da4"
+//        https://map.baidu.com/@13092628.138195531,3716087.11725552,6.96z,18.35t#panoid=fb2629b0a0f0afb4aeb22a4c&panotype=inter&heading=18&pitch=0&l=6.958152730952381&tn=B_NORMAL_MAP&sc=0&newmap=1&shareurl=1&pid=1000250001151117102651259IN&iid=fb2629b0a0f0afb4aeb22a4c
         mPanaView?.setPanorama(pid)
     }
 
@@ -222,8 +227,10 @@ class GameMapActivity : BaseActivity() {
         Log.i("PanaTool", "find the location")
         val latitude = geoCodeResult.location.latitude
         val longitude = geoCodeResult.location.longitude
+
         targetPoint = Point1(longitude,latitude)
         mPanaView?.setPanorama(targetPoint!!.x,targetPoint!!.y)
+
     }
     fun handleGeoCodeResultGuess(geoCodeResult : GeoCodeResult){
         //获取地理编码检索结果
