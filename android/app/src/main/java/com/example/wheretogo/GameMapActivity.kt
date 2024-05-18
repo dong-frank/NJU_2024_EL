@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -18,12 +19,15 @@ import com.baidu.lbsapi.BMapManager
 import com.baidu.lbsapi.panoramaview.PanoramaView
 import com.baidu.lbsapi.panoramaview.PanoramaViewListener
 import com.baidu.mapapi.search.core.SearchResult
-import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener
+import com.baidu.mapapi.search.geocode.GeoCodeResult
 import com.baidu.mapapi.search.sug.SuggestionResult
 import com.baidu.mapapi.search.sug.SuggestionSearch
-import com.baidu.mapapi.search.sug.SuggestionSearchOption
-import com.example.wheretogo.PanaTool.changePana
+import com.example.wheretogo.PanaTool.getGuessPoint
+import com.example.wheretogo.PanaTool.getTargetPoint
 import com.example.wheretogo.PanaTool.sugSearch
+import com.baidu.mapapi.model.CoordUtil.getDistance
+import com.baidu.lbsapi.tools.Point as Point1
+import com.baidu.platform.comapi.basestruct.Point as Point2
 
 
 class GameMapActivity : BaseActivity() {
@@ -49,7 +53,11 @@ class GameMapActivity : BaseActivity() {
     var button_search : Button? = null
     var inputPlaceNameCity : String = "北京"
     var inputPlaceNameAddress : String = "海淀区上地十街10号"
-    @SuppressLint("SetTextI18n")
+    var guessPlaceNameCity : String ?= null
+    var dtDistance : Double = 0.0
+    var targetPoint : Point1? = null
+    var guessPoint : Point1? = null
+    @SuppressLint("SetTextI18n", "ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_map_layout)
@@ -62,6 +70,8 @@ class GameMapActivity : BaseActivity() {
         editText_city?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 inputPlaceNameCity = v.text.toString()
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
                 editText_city?.clearFocus()
                 true
             } else {
@@ -73,7 +83,6 @@ class GameMapActivity : BaseActivity() {
         editText_address?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 // 输入文字结束时
-
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -83,6 +92,7 @@ class GameMapActivity : BaseActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // 输入文字中
                 inputPlaceNameAddress = s.toString()
+                Log.i("PanaTool", inputPlaceNameAddress)
                 sugSearch(inputPlaceNameCity,inputPlaceNameAddress,this@GameMapActivity)
             }
         })
@@ -98,6 +108,8 @@ class GameMapActivity : BaseActivity() {
         editText_address?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 //不点击联想框的时候
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
                 editText_address?.clearFocus()
                 true
             } else {
@@ -107,23 +119,20 @@ class GameMapActivity : BaseActivity() {
         button_search?.setOnClickListener{
             inputPlaceNameCity= editText_city?.text.toString()
             inputPlaceNameAddress = editText_address?.text.toString()
-            changePana(inputPlaceNameCity,inputPlaceNameAddress,mPanaView)
-            listView?.visibility = View.GONE
+            getTargetPoint(inputPlaceNameCity,inputPlaceNameAddress,this@GameMapActivity)
+            //TODO:经纬度转换为全景
+            Log.i("PanaTool", "change the panorama")
             textView?.text = inputPlaceNameAddress
-            editText_address?.text?.clear()
             editText_address?.clearFocus()
-            inputPlaceNameCity = "北京"
-            inputPlaceNameAddress = "海淀区上地十街10号"
         }
         editText_guess?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val guess = v.text.toString()
+                guessPlaceNameCity = v.text.toString()
                 val result = inputPlaceNameCity
-                if(guess == result) {
-                    textView_systemOutput?.text = "回答正确:$result"
-                } else {
-                    textView_systemOutput?.text = "回答错误,请再试一次"
-                }
+                getGuessPoint(guessPlaceNameCity,guessPlaceNameCity,this@GameMapActivity)
+                //隐藏键盘
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
                 editText_guess!!.text.clear()
                 true
             } else {
@@ -154,16 +163,16 @@ class GameMapActivity : BaseActivity() {
         // 测试回调函数,需要注意的是回调函数要在setPanorama()之前调用，否则回调函数可能执行异常
         mPanaView?.setPanoramaViewListener(object : PanoramaViewListener {
             override fun onLoadPanoramaBegin() {
-                Log.i(com.example.wheretogo.GameMapActivity.toString(), "onLoadPanoramaStart...")
+                Log.i(toString(), "onLoadPanoramaStart...")
             }
 
             override fun onLoadPanoramaEnd(json: String) {
-                Log.i(com.example.wheretogo.GameMapActivity.toString(), "onLoadPanoramaEnd : $json")
+                Log.i(toString(), "onLoadPanoramaEnd : $json")
             }
 
             override fun onLoadPanoramaError(error: String) {
                 Log.i(
-                    com.example.wheretogo.GameMapActivity.toString(),
+                    toString(),
                     "onLoadPanoramaError : $error"
                 )
             }
@@ -181,7 +190,8 @@ class GameMapActivity : BaseActivity() {
 
     fun handleSuggestionResult(suggestionResult: SuggestionResult){
         //获取在线建议检索结果
-        listView?.visibility = View.VISIBLE
+        Log.i("PanaTool", "start find the suggestion")
+
         if (suggestionResult.error == SearchResult.ERRORNO.NO_ERROR) {
             //获取在线建议检索结果
             val suggestions = suggestionResult.allSuggestions
@@ -202,7 +212,31 @@ class GameMapActivity : BaseActivity() {
                 val suggestion = suggestions[position]
                 editText_address?.setText(suggestion.key)
                 editText_address?.clearFocus()
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
+        }
+    }
+    fun handleGeoCodeResultTarget(geoCodeResult : GeoCodeResult){
+        //获取地理编码检索结果
+        Log.i("PanaTool", "find the location")
+        val latitude = geoCodeResult.location.latitude
+        val longitude = geoCodeResult.location.longitude
+        targetPoint = Point1(longitude,latitude)
+        mPanaView?.setPanorama(targetPoint!!.x,targetPoint!!.y)
+    }
+    fun handleGeoCodeResultGuess(geoCodeResult : GeoCodeResult){
+        //获取地理编码检索结果
+        Log.i("PanaTool", "find the location")
+        val latitude = geoCodeResult.location.latitude
+        val longitude = geoCodeResult.location.longitude
+        guessPoint = Point1(longitude,latitude)
+        dtDistance= getDistance(Point2(guessPoint!!.x,guessPoint!!.y),Point2(targetPoint!!.x,targetPoint!!.y))
+        val formattedDistance = String.format("%.2f", dtDistance*100)
+        if(guessPlaceNameCity == inputPlaceNameCity) {
+            textView_systemOutput?.text = "回答正确:$inputPlaceNameCity"
+        } else {
+            textView_systemOutput?.text = "回答错误,请再试一次.和正确位置相差:$formattedDistance 千米"
         }
     }
     @Override
