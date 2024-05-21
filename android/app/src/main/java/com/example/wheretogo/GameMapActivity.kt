@@ -3,11 +3,13 @@ package com.example.wheretogo
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
@@ -15,6 +17,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import com.baidu.lbsapi.BMapManager
 import com.baidu.lbsapi.panoramaview.PanoramaRequest
 import com.baidu.lbsapi.panoramaview.PanoramaView
@@ -60,6 +63,8 @@ class GameMapActivity : BaseActivity() {
     var targetPoint : Point1? = null
     var guessPoint : Point1? = null
     var panoramaRequest : PanoramaRequest? = null
+
+    @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @SuppressLint("SetTextI18n", "ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,13 +141,15 @@ class GameMapActivity : BaseActivity() {
                 //隐藏键盘
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
-                editText_guess!!.text.clear()
+                editText_guess?.clearFocus()
                 true
             } else {
                 false
             }
         }
+
     }
+    @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private fun initView() {
         mPanaView = findViewById<View>(R.id.panorama) as PanoramaView
         editText_city = findViewById<EditText>(R.id.panodemo_main_input_city)
@@ -152,6 +159,17 @@ class GameMapActivity : BaseActivity() {
         textView_systemOutput = findViewById<TextView>(R.id.system_output)
         listView = findViewById<ListView>(R.id.sugsearchlist)
         button_search = findViewById<Button>(R.id.search)
+
+        mPanaView?.accessibilityDelegate  = @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+        object : View.AccessibilityDelegate() {
+            override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfo) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+
+                // 在这里，你可以自定义无障碍节点信息
+                // 例如，你可以设置无障碍节点的描述
+                info.text = "这是一个全景图片"
+            }
+        }
     }
 
     private fun testPanoByType(type : Int) {
@@ -240,10 +258,11 @@ class GameMapActivity : BaseActivity() {
         guessPoint = Point1(longitude,latitude)
         dtDistance= getDistance(Point2(guessPoint!!.x,guessPoint!!.y),Point2(targetPoint!!.x,targetPoint!!.y))
         val formattedDistance = String.format("%.2f", dtDistance*100)
+        val direction = CoordinateTool.bearingToDirection(CoordinateTool.calculateBearing(guessPoint,targetPoint))
         if(guessPlaceNameCity == inputPlaceNameCity) {
             textView_systemOutput?.text = "回答正确:$inputPlaceNameCity"
         } else {
-            textView_systemOutput?.text = "回答错误,请再试一次.和正确位置相差:$formattedDistance 千米"
+            textView_systemOutput?.text = "回答错误,请再试一次.和正确位置相差:$formattedDistance 千米,\n正确位置在你猜的城市的$direction 方向"
         }
     }
     @Override
