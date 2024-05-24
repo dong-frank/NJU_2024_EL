@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Where To Go</string>
+    <string name="app_name">鼠鼠去那儿</string>
     <string name="title_activity_game">GameActivity</string>
     <string name="title_activity_introduce">IntroduceActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
@@ -11,4 +11,5 @@
     <string name="privacy_exit">退出</string>
     <string name="privacy_agree">同意</string>
     <string name="title_activity_pravicy">PravicyActivity</string>
+    <string name="title_menu_title">鼠鼠去那儿</string>
 </resources>

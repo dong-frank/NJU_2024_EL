@@ -9,6 +9,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -160,14 +162,17 @@ class GameMapActivity : BaseActivity() {
         listView = findViewById<ListView>(R.id.sugsearchlist)
         button_search = findViewById<Button>(R.id.search)
 
-        mPanaView?.accessibilityDelegate  = @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        object : View.AccessibilityDelegate() {
+        mPanaView?.accessibilityDelegate = object : View.AccessibilityDelegate() {
             override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfo) {
                 super.onInitializeAccessibilityNodeInfo(host, info)
-
-                // 在这里，你可以自定义无障碍节点信息
-                // 例如，你可以设置无障碍节点的描述
-                info.text = "这是一个全景图片"
+                // Add the content description of the PanoramaView to the AccessibilityNodeInfo
+                info.text = "百度全景地图"
+            }
+            override fun onRequestSendAccessibilityEvent(host: ViewGroup, child: View, event: AccessibilityEvent): Boolean {
+                // Change the content of the event to the content description of the PanoramaView
+                event.text.clear()
+                event.text.add("百度全景地图")
+                return super.onRequestSendAccessibilityEvent(host, child, event)
             }
         }
     }

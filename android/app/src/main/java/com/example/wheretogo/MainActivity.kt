@@ -70,15 +70,6 @@ class MainActivity : BaseActivity() {
             GameMapActivity.actionStart(this, "data1", "data2")//启动游戏界面,data1和data2是传入的数据
             Log.d("MainActivity", "Game Start and go to GameActivity")
         }
-
-        binding.introduce.setOnClickListener {
-            IntroduceActivity.actionStart(this, "data1", "data2")//启动介绍界面,data1和data2是传入的数据
-            Log.d("MainActivity", "Introduce and go to IntroduceActivity")
-        }
-        binding.setting.setOnClickListener {
-            SettingActivity.actionStart(this, "data1", "data2")//启动设置界面,data1和data2是传入的数据
-            Log.d("MainActivity", "Setting and go to SettingActivity")
-        }
         binding.exit.setOnClickListener {
             Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
             ActivityCollector.finishAll()
