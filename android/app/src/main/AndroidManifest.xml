@@ -28,6 +28,15 @@
         android:theme="@style/Theme.WhereToGo"
         tools:replace="android:icon"
         tools:targetApi="31">
+        <activity
+            android:name=".DB_MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DB_UpdateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DB_AddActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

@@ -9,10 +9,10 @@ plugins {
 android {
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\Frank\\.android\\debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+            storeFile = file("C:\\Users\\18446\\Leon.jks")
+            storePassword = "112233"
+            keyAlias = "key0"
+            keyPassword = "112233"
         }
         create("release") {
             storeFile = file("D:\\android_key\\wheretogo_released_key.jks")
@@ -90,6 +90,8 @@ dependencies {
     implementation(files("libs/BaiduLBS_Android.aar"))
     implementation ("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

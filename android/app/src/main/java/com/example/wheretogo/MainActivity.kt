@@ -32,10 +32,10 @@ import java.io.UnsupportedEncodingException
 /**
  * MainActivity is the entry point of the app.
  * It is the first screen that the user sees when they launch the app.
-    */
+ */
 class MainActivity : BaseActivity() {
     var mBMapManager: BMapManager? = null
-//    val context = applicationContext
+    //    val context = applicationContext
     private var btnPrivacy: Button? = null
     /**
      * 获取返回数据
@@ -72,7 +72,8 @@ class MainActivity : BaseActivity() {
         }
         binding.exit.setOnClickListener {
             Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
-            ActivityCollector.finishAll()
+            val intent =Intent(this, DB_MainActivity::class.java)
+            startActivity(intent);
             Log.d("MainActivity", "Exit")
         }
         binding.requestPermission.setOnClickListener {
