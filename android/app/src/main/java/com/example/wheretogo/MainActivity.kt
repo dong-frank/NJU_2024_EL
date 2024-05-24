@@ -70,10 +70,14 @@ class MainActivity : BaseActivity() {
             GameMapActivity.actionStart(this, "data1", "data2")//启动游戏界面,data1和data2是传入的数据
             Log.d("MainActivity", "Game Start and go to GameActivity")
         }
-        binding.exit.setOnClickListener {
-            Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
+        binding.sqlite.setOnClickListener {
             val intent =Intent(this, DB_MainActivity::class.java)
             startActivity(intent);
+            Log.d("MainActivity", "Exit")
+        }
+        binding.exit.setOnClickListener {
+            Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
+            ActivityCollector.finishAll()
             Log.d("MainActivity", "Exit")
         }
         binding.requestPermission.setOnClickListener {
