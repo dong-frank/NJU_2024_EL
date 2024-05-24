@@ -17,20 +17,16 @@ import androidx.annotation.RequiresApi
 class TitleLayout(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
     init {
         LayoutInflater.from(context).inflate(R.layout.title, this)
-//        val titleBack = findViewById<Button>(R.id.titleBack)
         val activity = context as Activity
         val title_toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.title_toolbar)
-        title_toolbar.inflateMenu(R.menu.toolbar_menu)
-//        val titleText = findViewById<TextView>(R.id.titleText)
         when (activity.javaClass.simpleName) {
             "MainActivity" -> title_toolbar.setTitle("鼠鼠去那儿")
-            "GameMapActivity" -> title_toolbar.setTitle("猜猜鼠鼠去了哪儿")
+            "GameMapActivity" -> {
+                title_toolbar.setTitle("你能猜到鼠鼠去哪了吗")
+                title_toolbar.inflateMenu(R.menu.toolbar_menu)
+            }
         }
-//
-//        titleBack.setOnClickListener {
-//            Toast.makeText(context, "Back", Toast.LENGTH_SHORT).show()
-//            Log.d(activity.toString(), "Back")
-//            activity.finish()
-//        }
     }
+
+
 }

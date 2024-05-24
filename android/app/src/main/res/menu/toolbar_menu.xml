@@ -2,8 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/icon_map"
+        android:icon="@drawable/map_icon"
+        android:title="Map"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/action_add"
-        android:icon="@android:drawable/ic_input_add"
+        android:icon="@drawable/add_icon"
         android:title="Add"
         app:showAsAction="ifRoom"/>
+
 </menu>

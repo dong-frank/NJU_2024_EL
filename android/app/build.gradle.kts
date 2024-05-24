@@ -1,3 +1,4 @@
+import org.gradle.internal.impldep.bsh.commands.dir
 import org.jetbrains.kotlin.cli.jvm.main
 
 plugins {
@@ -75,7 +76,7 @@ android {
 }
 
 dependencies {
-
+    implementation (fileTree("dir" to "libs", "include" to listOf("*.aar")))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

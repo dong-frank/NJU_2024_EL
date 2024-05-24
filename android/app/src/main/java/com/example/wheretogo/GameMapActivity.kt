@@ -19,6 +19,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.baidu.lbsapi.BMapManager
 import com.baidu.lbsapi.panoramaview.PanoramaRequest
@@ -58,6 +59,7 @@ class GameMapActivity : BaseActivity() {
     var textView_systemOutput: TextView? = null
     var listView: ListView? = null
     var button_search : Button? = null
+    var toolbar: com.google.android.material.appbar.MaterialToolbar? = null
     var inputPlaceNameCity : String = "北京"
     var inputPlaceNameAddress : String = "海淀区上地十街10号"
     var guessPlaceNameCity : String ?= null
@@ -76,6 +78,18 @@ class GameMapActivity : BaseActivity() {
         if (intent != null) {
             testPanoByType(intent.getIntExtra("type", -1))
         }
+        toolbar?.setOnMenuItemClickListener() {
+            when(it.itemId){
+                R.id.action_add -> {
+                    handleAddClick()
+                }
+                R.id.icon_map -> {
+                    handleMapClick()
+                }
+            }
+            true
+        }
+
 
         editText_city?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -161,6 +175,7 @@ class GameMapActivity : BaseActivity() {
         textView_systemOutput = findViewById<TextView>(R.id.system_output)
         listView = findViewById<ListView>(R.id.sugsearchlist)
         button_search = findViewById<Button>(R.id.search)
+        toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.title_toolbar)
 
         mPanaView?.accessibilityDelegate = object : View.AccessibilityDelegate() {
             override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfo) {
@@ -210,7 +225,7 @@ class GameMapActivity : BaseActivity() {
             override fun onMoveEnd() {}
         })
         mPanaView?.setPanoramaImageLevel(PanoramaView.ImageDefinition.ImageDefinitionHigh)
-        val pid = "0100220000130817164838355J5"
+        val pid = "0900250012221008122348381AD"
         val uid = "bff8fa7deabc06b9c9213da4"
 //        https://map.baidu.com/@13092628.138195531,3716087.11725552,6.96z,18.35t#panoid=fb2629b0a0f0afb4aeb22a4c&panotype=inter&heading=18&pitch=0&l=6.958152730952381&tn=B_NORMAL_MAP&sc=0&newmap=1&shareurl=1&pid=1000250001151117102651259IN&iid=fb2629b0a0f0afb4aeb22a4c
         mPanaView?.setPanorama(pid)
@@ -269,6 +284,14 @@ class GameMapActivity : BaseActivity() {
         } else {
             textView_systemOutput?.text = "回答错误,请再试一次.和正确位置相差:$formattedDistance 千米,\n正确位置在你猜的城市的$direction 方向"
         }
+    }
+
+    private fun handleAddClick() {
+        //TODO:增加一个地点
+    }
+    private fun handleMapClick() {
+        //TODO:跳转到地图界面
+        Toast.makeText(this, "跳转到地图界面", Toast.LENGTH_SHORT).show()
     }
     @Override
     override fun onPause() {
