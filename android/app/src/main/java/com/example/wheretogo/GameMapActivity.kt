@@ -1,6 +1,7 @@
 package com.example.wheretogo
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -21,8 +22,6 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.baidu.lbsapi.BMapManager
-import com.baidu.lbsapi.panoramaview.PanoramaRequest
 import com.baidu.lbsapi.panoramaview.PanoramaView
 import com.baidu.lbsapi.panoramaview.PanoramaViewListener
 import com.baidu.mapapi.model.CoordUtil.getDistance
@@ -30,7 +29,6 @@ import com.baidu.mapapi.search.core.SearchResult
 import com.baidu.mapapi.search.geocode.GeoCodeResult
 import com.baidu.mapapi.search.sug.SuggestionResult
 import com.baidu.mapapi.search.sug.SuggestionSearch
-import com.baidu.mshield.x0.EngineImpl.mContext
 import com.example.wheretogo.PanaTool.getGuessPoint
 import com.example.wheretogo.PanaTool.getTargetPoint
 import com.example.wheretogo.PanaTool.sugSearch
@@ -49,24 +47,28 @@ class GameMapActivity : BaseActivity() {
             context.startActivity(intent)
         }
     }
-    var mBmapManager: BMapManager? = null
     var mPanaView: PanoramaView? = null
     var mSuggestionSearch : SuggestionSearch? = null
     var editText_city: EditText? = null
     var editText_address: EditText? = null
     var editText_guess: EditText? = null
-    var textView: TextView? = null
+    var textView_introduce: TextView? = null
     var textView_systemOutput: TextView? = null
     var listView: ListView? = null
     var button_search : Button? = null
     var toolbar: com.google.android.material.appbar.MaterialToolbar? = null
-    var inputPlaceNameCity : String = "北京"
-    var inputPlaceNameAddress : String = "海淀区上地十街10号"
-    var guessPlaceNameCity : String ?= null
+    var goPlaceNameCity : String = "北京"
+    var goPlaceNameAddress : String = "海淀区上地十街10号"
+    var wherePlaceNameCity : String ="北京"
+    var wherePlaceNameAddress : String ="海淀区上地十街10号"
+    var wherePlacePID : String =""
+    var guessPlaceNameAddress : String ?= null
     var dtDistance : Double = 0.0
     var targetPoint : Point1? = null
     var guessPoint : Point1? = null
-    var panoramaRequest : PanoramaRequest? = null
+    var isCorrect : Boolean = false
+    var mode : Boolean = true
+    var introduce : String =""
 
     @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @SuppressLint("SetTextI18n", "ServiceCast")
@@ -74,6 +76,7 @@ class GameMapActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_map_layout)
         initView()
+        updateUI()
         val intent = intent
         if (intent != null) {
             testPanoByType(intent.getIntExtra("type", -1))
@@ -90,79 +93,9 @@ class GameMapActivity : BaseActivity() {
             true
         }
 
+        //游戏过程
+        gameStart()
 
-        editText_city?.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                inputPlaceNameCity = v.text.toString()
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.windowToken, 0)
-                editText_city?.clearFocus()
-                true
-            } else {
-                false
-            }
-        }
-        //监听输入框文本变化
-        //TODO:联想框不可见
-        editText_address?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // 输入文字结束时
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // 输入文字前
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // 输入文字中
-                inputPlaceNameAddress = s.toString()
-                Log.i("PanaTool", inputPlaceNameAddress)
-                sugSearch(inputPlaceNameCity,inputPlaceNameAddress,this@GameMapActivity)
-            }
-        })
-        editText_address?.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus){
-                //获取焦点时
-                listView?.visibility = View.VISIBLE
-            } else {
-                //失去焦点时
-                listView?.visibility = View.GONE
-            }
-        }
-        editText_address?.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                //不点击联想框的时候
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.windowToken, 0)
-                editText_address?.clearFocus()
-                true
-            } else {
-                false
-            }
-        }
-        button_search?.setOnClickListener{
-            inputPlaceNameCity= editText_city?.text.toString()
-            inputPlaceNameAddress = editText_address?.text.toString()
-            getTargetPoint(inputPlaceNameCity,inputPlaceNameAddress,this@GameMapActivity)
-            //TODO:经纬度转换为全景
-            Log.i("PanaTool", "change the panorama")
-            textView?.text = inputPlaceNameAddress
-            editText_address?.clearFocus()
-        }
-        editText_guess?.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                guessPlaceNameCity = v.text.toString()
-                val result = inputPlaceNameCity
-                getGuessPoint(guessPlaceNameCity,guessPlaceNameCity,this@GameMapActivity)
-                //隐藏键盘
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.windowToken, 0)
-                editText_guess?.clearFocus()
-                true
-            } else {
-                false
-            }
-        }
 
     }
     @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -171,12 +104,11 @@ class GameMapActivity : BaseActivity() {
         editText_city = findViewById<EditText>(R.id.panodemo_main_input_city)
         editText_address = findViewById<EditText>(R.id.panodemo_main_input_address)
         editText_guess = findViewById<EditText>(R.id.user_guess)
-        textView = findViewById<TextView>(R.id.panodemo_main_output)
+        textView_introduce = findViewById<TextView>(R.id.introduce)
         textView_systemOutput = findViewById<TextView>(R.id.system_output)
         listView = findViewById<ListView>(R.id.sugsearchlist)
         button_search = findViewById<Button>(R.id.search)
         toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.title_toolbar)
-
         mPanaView?.accessibilityDelegate = object : View.AccessibilityDelegate() {
             override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfo) {
                 super.onInitializeAccessibilityNodeInfo(host, info)
@@ -192,6 +124,135 @@ class GameMapActivity : BaseActivity() {
         }
     }
 
+    private fun updateUI(){
+        //猜测正确，显示箭头和其他全景信息
+        if(!mode){
+            textView_systemOutput?.text="随便走走吧"
+            editText_city?.visibility = View.VISIBLE
+            editText_address?.visibility = View.VISIBLE
+            editText_guess?.hint = "想去哪？"
+            button_search?.text = "去那看看"
+            editText_guess?.isEnabled=false
+            textView_introduce?.visibility = View.VISIBLE
+            mPanaView?.setShowTopoLink(true)
+            //去那看看按钮
+            button_search?.setOnClickListener{
+                goPlaceNameCity= editText_city?.text.toString()
+                goPlaceNameAddress = editText_address?.text.toString()
+                getTargetPoint(goPlaceNameCity,goPlaceNameAddress,this@GameMapActivity)
+                //经纬度转换为全景
+                Log.i("PanaTool", "change the panorama")
+            }
+            editText_city?.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                    editText_city?.clearFocus()
+                    true
+                } else {
+                    false
+                }
+            }
+            //监听输入框文本变化
+            editText_address?.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    // 输入文字结束时
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // 输入文字前
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // 输入文字中
+                    goPlaceNameAddress = s.toString()
+                    Log.i("PanaTool", goPlaceNameAddress)
+                    sugSearch(goPlaceNameCity,goPlaceNameAddress,this@GameMapActivity)
+                }
+            })
+            editText_address?.setOnFocusChangeListener { v, hasFocus ->
+                if(hasFocus){
+                    //获取焦点时
+                    listView?.visibility = View.VISIBLE
+                } else {
+                    //失去焦点时
+                    listView?.visibility = View.GONE
+                }
+            }
+            editText_address?.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    //不点击联想框的时候
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                    editText_address?.clearFocus()
+                    true
+                } else {
+                    false
+                }
+            }
+
+
+        }else {
+            //猜测模式
+            editText_city?.visibility = View.GONE
+            editText_address?.visibility = View.GONE
+            editText_guess?.hint = "你知道这是哪吗?"
+            button_search?.text = "是这吗"
+            editText_guess?.isEnabled=true
+            textView_introduce?.visibility = View.GONE
+            mPanaView?.setShowTopoLink(false)
+            //猜测
+            editText_guess?.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    guessPlaceNameAddress = v.text.toString()
+                    //隐藏键盘
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                    editText_guess?.clearFocus()
+                    true
+                } else {
+                    false
+                }
+            }
+            //是这吗按钮
+            button_search?.setOnClickListener {
+                guessPlaceNameAddress = editText_guess?.text.toString()
+                val result = wherePlaceNameCity
+                //隐藏键盘
+                handleGuess()
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(editText_guess?.windowToken, 0)
+                editText_guess?.clearFocus()
+            }
+        }
+    }
+
+    private fun gameStart(){
+        //TODO:从数据库获取信息
+        wherePlaceNameCity="南京"
+        wherePlaceNameAddress="紫峰大厦"
+        wherePlacePID="0900250012221008122348381AD"
+        introduce="这是南京第一高楼"
+        getTargetPoint(wherePlaceNameCity,wherePlaceNameAddress,this@GameMapActivity)
+    }
+
+    private fun handleGuess(){
+        getGuessPoint(wherePlaceNameCity,guessPlaceNameAddress,this@GameMapActivity)
+    }
+
+    private fun leave(){
+        mode=false
+        updateUI()
+    }
+
+    private fun continueGame(){
+        //TODO:从下一条数据库中下一条数据获取信息
+        wherePlaceNameCity="南京"
+        wherePlaceNameAddress="南京大学"
+        wherePlacePID="09002500121709071035569301I"
+        introduce="这是南京最高学府"
+        getTargetPoint(wherePlaceNameCity,wherePlaceNameAddress,this@GameMapActivity)
+    }
     private fun testPanoByType(type : Int) {
         mPanaView?.setShowTopoLink(true)
 //        hideMarkerButton()
@@ -267,8 +328,11 @@ class GameMapActivity : BaseActivity() {
         val longitude = geoCodeResult.location.longitude
 
         targetPoint = Point1(longitude,latitude)
-        mPanaView?.setPanorama(targetPoint!!.x,targetPoint!!.y)
-
+        if(mode){
+            mPanaView?.setPanorama(wherePlacePID)
+        }else {
+            mPanaView?.setPanorama(targetPoint!!.x, targetPoint!!.y)
+        }
     }
     fun handleGeoCodeResultGuess(geoCodeResult : GeoCodeResult){
         //获取地理编码检索结果
@@ -279,18 +343,44 @@ class GameMapActivity : BaseActivity() {
         dtDistance= getDistance(Point2(guessPoint!!.x,guessPoint!!.y),Point2(targetPoint!!.x,targetPoint!!.y))
         val formattedDistance = String.format("%.2f", dtDistance*100)
         val direction = CoordinateTool.bearingToDirection(CoordinateTool.calculateBearing(guessPoint,targetPoint))
-        if(guessPlaceNameCity == inputPlaceNameCity) {
-            textView_systemOutput?.text = "回答正确:$inputPlaceNameCity"
+        if(guessPlaceNameAddress == wherePlaceNameAddress) {
+            textView_systemOutput?.text = "回答正确:$wherePlaceNameAddress"
+            //TODO:弹出提示框，继续下一题还是先随便走走
+            isCorrect=true
+            AlertDialog.Builder(this).apply {
+                setTitle("This is Dialog")
+                setMessage("恭喜你回答正确")
+                setCancelable(false)
+                
+                setPositiveButton("继续游戏") { dialog, which ->
+                    continueGame()
+                }
+                setNegativeButton("随便走走") { dialog, which ->
+                    leave()
+                }
+                show()
+            }
         } else {
-            textView_systemOutput?.text = "回答错误,请再试一次.和正确位置相差:$formattedDistance 千米,\n正确位置在你猜的城市的$direction 方向"
+            textView_systemOutput?.text = "回答错误,请再试一次,$introduce"
+            isCorrect=false
+            //TODO:提示
+//            textView_introduce?.text=introduce
+            //TODO:提示滚动到下一条
+            introduce="这里是鼓楼区"
+
         }
     }
 
     private fun handleAddClick() {
         //TODO:增加一个地点
+        val myDB : DB_MyDatabaseHelper = DB_MyDatabaseHelper(this)
+
     }
     private fun handleMapClick() {
         //TODO:跳转到地图界面
+        mode=!mode
+        updateUI()
+        //
         Toast.makeText(this, "跳转到地图界面", Toast.LENGTH_SHORT).show()
     }
     @Override

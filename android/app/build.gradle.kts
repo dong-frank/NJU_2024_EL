@@ -9,10 +9,9 @@ plugins {
 android {
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\18446\\Leon.jks")
-            storePassword = "112233"
-            keyAlias = "key0"
-            keyPassword = "112233"
+            storeFile = file("C:\\Users\\Frank\\.android\\debug.keystore")
+            storePassword = "android"
+            keyPassword = "android"
         }
         create("release") {
             storeFile = file("D:\\android_key\\wheretogo_released_key.jks")
