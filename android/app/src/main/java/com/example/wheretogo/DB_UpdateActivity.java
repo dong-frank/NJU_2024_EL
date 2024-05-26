@@ -12,19 +12,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class DB_UpdateActivity extends AppCompatActivity {
     //declaration FOR the buttons
-    EditText title_input, author_input, pages_input;
+    //TODO: KEEP AN EYE FOR THE PID_INPUT AND ADDRESS_INPUT __ MIXED UP ONCE;
+    EditText name_input2, city_input2, PID_input2;
+    EditText address_input2,intro_input2;
     Button update_button,delete_button;
 
-    String id,title,author,pages; // used to save and display. And to update db
+    String id, name, city, address, PID, intro; // used to save and display. And to update db
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db_update);
 
-        title_input = findViewById(R.id.title_input2);
-        author_input = findViewById(R.id.author_input2);
-        pages_input = findViewById(R.id.pages_input2);
+        name_input2 = findViewById(R.id.name_input2);
+        city_input2 = findViewById(R.id.city_input2);
+
+        address_input2 = findViewById(R.id.address_input2);
+        PID_input2 = findViewById(R.id.PID_input2);
+        intro_input2 = findViewById(R.id.intro_input2);
+
         update_button = findViewById(R.id.update_button);
         delete_button = findViewById(R.id.delete_button);
 
@@ -39,10 +45,12 @@ public class DB_UpdateActivity extends AppCompatActivity {
                 DB_MyDatabaseHelper myDB = new DB_MyDatabaseHelper((DB_UpdateActivity.this));
                 // it's weird that in the video there are no such lines to get title and author update...
                 //     ## note that it's possible to change text to string~
-                title = title_input.getText().toString().trim();
-                author = author_input.getText().toString().trim();
-                pages = pages_input.getText().toString().trim();
-                myDB.updateData(id, title, author, pages);
+                name = name_input2.getText().toString().trim();
+                city = city_input2.getText().toString().trim();
+                address = address_input2.getText().toString().trim();
+                PID = PID_input2.getText().toString().trim();
+                intro = intro_input2.getText().toString().trim();
+                myDB.updateData(id, name, city, address, PID, intro );
             }
         });
         delete_button.setOnClickListener(new View.OnClickListener() {
@@ -56,30 +64,35 @@ public class DB_UpdateActivity extends AppCompatActivity {
     }
 
     // if there are extra info passed in, we save them and later display them.
-    void getAndSetIntentData(){
-        if(getIntent().hasExtra("id") && getIntent().hasExtra("title")
-                && getIntent().hasExtra("author") && getIntent().hasExtra("pages")) {
+    void getAndSetIntentData(){//TODO: ATTENTION!!! CHECK ALL INTENT USAGE
+        if(getIntent().hasExtra("id") && getIntent().hasExtra("name")
+                && getIntent().hasExtra("city") && getIntent().hasExtra("address")
+                && getIntent().hasExtra("PID")&& getIntent().hasExtra("intro")) {
 
             // Getting data
             id = getIntent().getStringExtra("id");
-            title = getIntent().getStringExtra("title");
-            author = getIntent().getStringExtra("author");
-            pages = getIntent().getStringExtra("pages");
+            name = getIntent().getStringExtra("name");
+            city = getIntent().getStringExtra("city");
+            address = getIntent().getStringExtra("address");
+            PID = getIntent().getStringExtra("PID");
+            intro = getIntent().getStringExtra("intro");
 
             //Setting intent data
-            title_input.setText(title);
-            author_input.setText(author);
-            pages_input.setText(pages);
+            name_input2.setText(name);
+            city_input2.setText(city);
+            address_input2.setText(address);
+            PID_input2.setText(PID);
+            intro_input2.setText(intro);
 
         }else{
-            Toast.makeText(this, "No Data.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "没有数据哦", Toast.LENGTH_SHORT).show();
         }
     }
 
     void confirmDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Delete " + title + " ?");
-        builder.setMessage("Are you sure you want to delete "+title+" ?");
+        builder.setTitle("删除" + name + "?");
+        builder.setMessage("您确定要删除"+ name +"吗?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

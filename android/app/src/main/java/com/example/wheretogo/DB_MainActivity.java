@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -24,7 +23,8 @@ public class DB_MainActivity extends AppCompatActivity{
 
     // To get the info of db and display
     DB_MyDatabaseHelper myDB;
-    ArrayList<String> book_id,book_title,book_author,book_pages;
+    ArrayList<String> site_id, site_name, site_city, site_address;
+    ArrayList<String> site_PID,site_intro;
 
     // QUESTION:
     DB_CustomAdapter DBCustomAdapter;
@@ -32,6 +32,7 @@ public class DB_MainActivity extends AppCompatActivity{
     // QUESTION: constructor???
     @Override
     protected void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db_main);
 
@@ -49,15 +50,18 @@ public class DB_MainActivity extends AppCompatActivity{
         });
 
         myDB = new DB_MyDatabaseHelper(DB_MainActivity.this);
-        book_id = new ArrayList<>();
-        book_author = new ArrayList<>();
-        book_title = new ArrayList<>();
-        book_pages = new ArrayList<>();
+        site_id = new ArrayList<>();
+        site_city = new ArrayList<>();
+        site_name = new ArrayList<>();
+        site_address = new ArrayList<>();
+        site_PID = new ArrayList<>();
+        site_intro = new ArrayList<>();
 
 
         storeDataInArrays();
+//TODO
 
-        DBCustomAdapter = new DB_CustomAdapter(DB_MainActivity.this,this, book_id,book_title,book_author,book_pages);
+        DBCustomAdapter = new DB_CustomAdapter(DB_MainActivity.this,this, site_id, site_name, site_city, site_address,site_PID,site_intro);
         recyclerView.setAdapter(DBCustomAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(DB_MainActivity.this));
     }
@@ -68,23 +72,26 @@ public class DB_MainActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                recreate();
-            }
+            recreate();
         }
     }
 
     // cooperate with the local ArrayList so that we can display info
     void storeDataInArrays(){
+
         Cursor cursor = myDB.readAllData();
+
         if(cursor.getCount() == 0){
-            Toast.makeText(this,"No Data.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"无数据哦~",Toast.LENGTH_SHORT).show();
         }else{
+
             while(cursor.moveToNext()){
-                book_id.add(cursor.getString(0));
-                book_title.add(cursor.getString(1));
-                book_author.add(cursor.getString(2));
-                book_pages.add(cursor.getString(3));
+                site_id.add(cursor.getString(0));
+                site_name.add(cursor.getString(1));
+                site_city.add(cursor.getString(2));
+                site_address.add(cursor.getString(3));
+                site_PID.add(cursor.getString(4));
+                site_intro.add(cursor.getString(5));
             }
         }
     }

@@ -17,18 +17,25 @@ import java.util.ArrayList;
 //QUESTION: I am feeling extremely confused about the MyViewHolder...
 public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyViewHolder> {
     private Context context;// LOCAL context (QUESTION)
-    private ArrayList book_id,book_title,book_author,book_pages;
+    private ArrayList site_id, site_name, site_city, site_address;
+
+    private ArrayList site_PID , site_intro;
+
     private Activity activity;// for
 
     // Constructor;
     DB_CustomAdapter(Activity activity, Context context,
-                     ArrayList book_id, ArrayList book_title, ArrayList book_author , ArrayList book_pages){
+                     ArrayList site_id, ArrayList site_name, ArrayList site_city, ArrayList site_address,ArrayList site_PID, ArrayList site_intro){
         this.activity = activity;
         this.context = context;
-        this.book_author = book_author;
-        this.book_id = book_id;
-        this.book_title = book_title;
-        this.book_pages = book_pages;
+
+        this.site_id = site_id;
+
+        this.site_name = site_name;
+        this.site_city = site_city;
+        this.site_address = site_address;
+        this.site_PID = site_PID;
+        this.site_intro = site_intro;
     }
 
     // This method is called when the adapter needs to create a new ViewHolder
@@ -45,20 +52,24 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
     @NonNull
     @Override
     public void onBindViewHolder(@NonNull DB_CustomAdapter.MyViewHolder holder, final int position) {
-        holder.book_id_txt.setText(String.valueOf(book_id.get(position)));
-        holder.book_title_txt.setText(String.valueOf(book_title.get(position)));
-        holder.book_author_txt.setText(String.valueOf(book_author.get(position)));
-        holder.book_pages_txt.setText(String.valueOf(book_pages.get(position)));
+        holder.site_name_txt.setText(String.valueOf(site_name.get(position)));
+        holder.site_city_txt.setText(String.valueOf(site_city.get(position)));
+        holder.site_address_txt.setText(String.valueOf(site_address.get(position)));
+        holder.site_PID_txt.setText(String.valueOf(site_PID.get(position)));
+        holder.site_intro_txt.setText(String.valueOf(site_intro.get(position)));
 
         // this OnClickListener is used for update (so that you can touch the line to modify it)
         holder.mainLayout.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) {//TODO is this clear now??
                 Intent intent = new Intent(context, DB_UpdateActivity.class);
-                intent.putExtra("id",String.valueOf(book_id.get(position)));
-                intent.putExtra("title",String.valueOf(book_title.get(position)));
-                intent.putExtra("author",String.valueOf(book_author.get(position)));
-                intent.putExtra("pages",String.valueOf(book_pages.get(position)));
+                intent.putExtra("id",String.valueOf(site_id.get(position)));
+                intent.putExtra("name",String.valueOf(site_name.get(position)));
+                intent.putExtra("city",String.valueOf(site_city.get(position)));
+                intent.putExtra("address",String.valueOf(site_address.get(position)));
+                intent.putExtra("PID",String.valueOf(site_PID.get(position)));
+                intent.putExtra("intro",String.valueOf(site_intro.get(position)));
+                //TODO:
                 activity.startActivityForResult(intent,1);
             }
         });
@@ -66,20 +77,23 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return book_id.size();
+        return site_id.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView book_id_txt, book_author_txt, book_title_txt,book_pages_txt;
+        TextView site_city_txt, site_name_txt, site_address_txt;
+        TextView  site_intro_txt,site_PID_txt;
         LinearLayout mainLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            book_id_txt = itemView.findViewById(R.id.book_id_txt);
-            book_pages_txt = itemView.findViewById(R.id.book_pages_txt);
-            book_author_txt = itemView.findViewById(R.id.book_author_txt);
-            book_title_txt = itemView.findViewById(R.id.book_title_txt);
+
+            site_name_txt = itemView.findViewById(R.id.site_name_txt);
+            site_city_txt = itemView.findViewById(R.id.site_city_txt);
+            site_address_txt = itemView.findViewById(R.id.site_address_txt);
+            site_intro_txt = itemView.findViewById(R.id.site_intro_txt);
+            site_PID_txt= itemView.findViewById(R.id.site_PID_txt);
             mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }
