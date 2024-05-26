@@ -23,21 +23,32 @@
         />
     <Button
         android:id="@+id/start_game"
-        android:layout_width="match_parent"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text="START GAME"
+        android:layout_gravity="center"
+        android:textSize="23sp"
+        android:text="开始游戏"
+        android:background="@drawable/button"
         />
     <Button
         android:id="@+id/sqlite"
-        android:layout_width="match_parent"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text="SQLITE"
+        android:layout_gravity="center"
+        android:textSize="23sp"
+        android:layout_marginTop="15dp"
+        android:text="鼠鼠去过哪里"
+        android:background="@drawable/button"
         />
     <Button
         android:id="@+id/exit"
-        android:layout_width="match_parent"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text="EXIT"
+        android:layout_gravity="center"
+        android:textSize="23sp"
+        android:layout_marginTop="15dp"
+        android:text="退出"
+        android:background="@drawable/button"
         />
 
 </LinearLayout>

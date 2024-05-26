@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.wheretogo.ui.theme.WhereToGoTheme
 
 class SplashScreenActivity : BaseActivity() {
-        private val SPLASH_TIME_OUT:Long = 3000 // 3 sec
+        private val SPLASH_TIME_OUT:Long = 1500 // 3 sec
 
         @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
         override fun onCreate(savedInstanceState: Bundle?) {
