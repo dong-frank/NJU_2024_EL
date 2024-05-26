@@ -51,6 +51,8 @@ public class DB_MainActivity extends AppCompatActivity{
         });
 
         myDB = new DB_MyDatabaseHelper(DB_MainActivity.this);
+        // if you want to check the function of the two getSelectedData, cancel the Annotation of next line;
+        //myDB.getSelectedDataTest();// plz ignore this, this is for test usage;
         site_id = new ArrayList<>();
         site_city = new ArrayList<>();
         site_name = new ArrayList<>();

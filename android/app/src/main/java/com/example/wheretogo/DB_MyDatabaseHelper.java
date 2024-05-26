@@ -185,6 +185,91 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             Toast.makeText(context,"删除成功!",Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    // cooperate with mainActivity storeSelectedDataInArray (Test usage)
+    Cursor readSelectedData(String siteName){
+
+        String query = "SELECT * FROM "+ TABLE_NAME +" WHERE site_name GLOB \'*" + siteName +"*\'"; // once again LETHAL mistake
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null){
+            cursor = db.rawQuery(query,null);// this line is wrong!
+        }
+        return cursor;
+    }
+
+    Cursor getPotentialSiteName(String siteName){
+        String query = "SELECT * FROM "+ TABLE_NAME +" WHERE site_name GLOB \'*" + siteName +"*\'"; // once again LETHAL mistake
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null){
+            cursor = db.rawQuery(query,null);// this line is wrong!
+        }
+        return cursor;
+    }
+
+    String getSelectedPid(String siteName){
+
+        Cursor cursor = readSelectedData(siteName);
+        String rtn = null;
+
+        if(cursor.getCount()==0){
+            Toast.makeText(context,"未查询到...",Toast.LENGTH_SHORT).show();
+            return rtn;
+        }else if(cursor.getCount() == 1){
+            while(cursor.moveToNext()){
+                rtn = cursor.getString(4);
+            }
+            return rtn;
+        }else{
+            Toast.makeText(context,"查询到多个...",Toast.LENGTH_SHORT).show();
+            return rtn;
+        }
+    }
+
+    String getSelectedIntro(String siteName){
+        Cursor cursor = readSelectedData(siteName);
+        String rtn = null;
+        if(cursor.getCount()==0){
+            Toast.makeText(context,"未查询到...",Toast.LENGTH_SHORT).show();
+            return rtn;
+        }else if(cursor.getCount() == 1){
+            while(cursor.moveToNext()){
+                rtn = cursor.getString(5);
+            }
+            return rtn;
+        }else{
+            Toast.makeText(context,"查询到多个...",Toast.LENGTH_SHORT).show();
+            return rtn;
+        }
+    }
+    // plz ignore this one... this one is for text usage;
+    void getSelectedDataTest(){
+        {
+            //Default test for getSelectedPid() and getSelectedIntro();
+            String name_defalut = "紫峰小厦";
+            String city_default = "南京";
+            String address_default = "紫峰大厦";
+
+            String PID_default = getSelectedPid("紫峰大厦");
+            String intro_default = getSelectedIntro("紫峰大厦");
+
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_NAME, name_defalut);
+            cv.put(COLUMN_CITY, city_default);
+            cv.put(COLUMN_ADDRESS, address_default);
+            cv.put(COLUMN_PID, PID_default);
+            cv.put(COLUMN_INTRO, intro_default);
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.insert(TABLE_NAME, null, cv);
+        }
+    }
+
+
+
 }
 /*
 
