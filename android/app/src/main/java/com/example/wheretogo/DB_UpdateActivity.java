@@ -97,6 +97,20 @@ public class DB_UpdateActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 DB_MyDatabaseHelper myDB = new DB_MyDatabaseHelper(DB_UpdateActivity.this);
+
+                int current_at = myDB.getCurrentAt();
+                int current_row_id = myDB.getRow_IdByCurrentAt(current_at);
+                int target_row_id = Integer.parseInt(id);
+
+                if(current_row_id == 0){
+                    myDB.UpdateTourStatus("1",current_at, myDB.getTotalSitesNumber()-1);
+                }
+                else if(target_row_id <= current_row_id){
+                    myDB.UpdateTourStatus("1",current_at-1, myDB.getTotalSitesNumber()-1);
+                }else
+                {
+                    myDB.UpdateTourStatus("1",current_at, myDB.getTotalSitesNumber()-1);
+                }
                 myDB.deleteOneRow(id);
                 finish();
             }

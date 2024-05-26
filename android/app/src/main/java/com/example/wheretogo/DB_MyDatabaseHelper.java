@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;
@@ -24,6 +26,12 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String COLUMN_PID = "site_pid";
     private static final String COLUMN_INTRO = "site_intro";
+
+    private static final String TABLE_NAME_STATUS = "tour_status";
+    private static final String COLUMN_ID_STATUS = "_id";
+    private static final String COLUMN_TOUR_STATUS = "current_at_site_count";
+    private static final String COLUMN_TOTAL_SITES_NUMBER = "total_sites_number";
+
 
     DB_MyDatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,7 +51,24 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(query);
         //TODO: COMPLETE DEFAULT SETTING;
 
+        // step1 : create table; //TODO: CHANGED 1
+        String query_tour_status =  "CREATE TABLE " + TABLE_NAME_STATUS +
+                " (" + COLUMN_ID_STATUS + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_TOUR_STATUS +" INTEGER, " +
+                COLUMN_TOTAL_SITES_NUMBER + " INTEGER);";
+        db.execSQL(query_tour_status);
 
+        {   //default tour status
+            // Do remember to change total_sites_number if default values are changed...
+            int total_sites_number = 5; // WARNING! WARNING!
+            int current_at = 0;
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_TOUR_STATUS, current_at);
+            cv.put(COLUMN_TOTAL_SITES_NUMBER, total_sites_number);
+            db.insert(TABLE_NAME_STATUS, null, cv);
+        }
+
+        // WARNING! WARNING! CHANGE total_sites_number plz...
         {
             // default_1
             String name_defalut = "南京大学汉口路校门";
@@ -119,6 +144,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             cv.put(COLUMN_INTRO, intro_default);
             db.insert(TABLE_NAME, null, cv);
         }
+
     }
 
     @Override
@@ -140,9 +166,9 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_NAME,null, cv);
         if(result == -1){
-            Toast.makeText(context, "失败了...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "新增失败", Toast.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(context, "添加成功! :D", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "添加成功!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -160,6 +186,8 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+
+
     void updateData(String row_id, String name, String city, String address, String PID, String intro){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -171,7 +199,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
         long result = db.update(TABLE_NAME,cv,"_id=?",new String[]{row_id});
         if(result == -1){
-            Toast.makeText(context,"更新失败...QAQ",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"更新失败",Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(context,"更新成功!",Toast.LENGTH_SHORT).show();
         }
@@ -180,12 +208,13 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         long result = db.delete(TABLE_NAME,"_id=?",new String[]{row_id});
         if(result == -1){
-            Toast.makeText(context,"删除失败...T.T",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"删除失败",Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(context,"删除成功!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"删除成功",Toast.LENGTH_SHORT).show();
         }
     }
 
+    // BELOW are functions for SELECT;
 
     // cooperate with mainActivity storeSelectedDataInArray (Test usage)
     Cursor readSelectedData(String siteName){
@@ -246,16 +275,22 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             return rtn;
         }
     }
+
+
+
     // plz ignore this one... this one is for text usage;
     void getSelectedDataTest(){
         {
             //Default test for getSelectedPid() and getSelectedIntro();
-            String name_defalut = "紫峰小厦";
+            String name_defalut = getNextSiteName();
+
             String city_default = "南京";
             String address_default = "紫峰大厦";
 
-            String PID_default = getSelectedPid("紫峰大厦");
-            String intro_default = getSelectedIntro("紫峰大厦");
+            String PID_default = getSelectedPid("峰大");
+            String intro_default = getSelectedIntro("峰大");
+
+
 
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -265,6 +300,111 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             cv.put(COLUMN_INTRO, intro_default);
             SQLiteDatabase db = this.getWritableDatabase();
             db.insert(TABLE_NAME, null, cv);
+        }
+    }
+
+    // getNextSite part：
+
+    // cooperate with the function below;
+    String getNameByRowId(int row_id){
+
+        String query = "SELECT * FROM "+ TABLE_NAME +" WHERE _id = " +row_id; // once again LETHAL mistake
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null){
+            cursor = db.rawQuery(query,null);// this line is wrong!
+        }
+        String siteName = null;
+        while (cursor.moveToNext()) {
+            siteName = cursor.getString(1);
+        }
+
+        return siteName;
+    }
+
+    // call this function to get the name of next site;
+    String getNextSiteName(){
+        //step1 : find current_at (which is a counter)
+        int current_at = getCurrentAt();
+        current_at++;
+
+        //step1.2 change value of the table;
+        UpdateTourStatus("1",current_at,getTotalSitesNumber());
+        //step2 : find row_id of the current_at;
+        int row_id = getRow_IdByCurrentAt(current_at);
+
+        //step3: use row_id to find site_name;
+        if(row_id == 0){
+            Toast.makeText(context,"WENT WRONG!",Toast.LENGTH_SHORT).show();
+        }
+        return getNameByRowId(row_id);
+    }
+    int getCurrentAt(){
+        String query = "SELECT * FROM "+ TABLE_NAME_STATUS +" WHERE _id = 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null){
+            cursor = db.rawQuery(query,null);
+        }
+        int current_at = 1;
+        if(cursor.getCount() == 1) {
+            while (cursor.moveToNext()) {
+                current_at = cursor.getInt(1);
+            }
+        }
+        return current_at;
+    }
+    int getTotalSitesNumber(){
+        String query = "SELECT * FROM "+ TABLE_NAME_STATUS +" WHERE _id = 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if(db != null){
+            cursor = db.rawQuery(query,null);
+        }
+        int total_sites_number = 1;
+        if(cursor.getCount() == 1) {
+            while (cursor.moveToNext()) {
+                total_sites_number = cursor.getInt(1);
+            }
+        }
+        return  total_sites_number;
+    }
+    int getRow_IdByCurrentAt(int current_at){
+        SQLiteDatabase db = getReadableDatabase();
+        String query2 = "SELECT * FROM "+ TABLE_NAME; // once again LETHAL mistake
+        Cursor cursor_rowid = null;
+        if(db != null){
+            cursor_rowid = db.rawQuery(query2,null);// this line is wrong!
+        }
+        int counter = 1;
+        int row_id = 0;
+        while (cursor_rowid.moveToNext()) {
+            if (counter == current_at) {
+                row_id = cursor_rowid.getInt(0);
+            }
+            counter++;
+        }
+        return row_id;
+    }
+
+    void UpdateTourStatus(String row_id, int new_current_at, int new_total_sites){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        row_id = "1";
+
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_TOUR_STATUS,new_current_at);
+        cv.put(COLUMN_TOTAL_SITES_NUMBER,new_total_sites);
+
+        long result = db.update(TABLE_NAME_STATUS,cv,"_id=?",new String[]{row_id});
+        //TODO: CONCEAL THIS TOAST;
+        if(result == -1){
+            Toast.makeText(context,"Failed to update!",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(context,"Successful!",Toast.LENGTH_SHORT).show();
         }
     }
 

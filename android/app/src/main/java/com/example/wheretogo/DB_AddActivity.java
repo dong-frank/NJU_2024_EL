@@ -27,7 +27,7 @@ public class DB_AddActivity extends AppCompatActivity {
 
         add_button = findViewById(R.id.add_button);
 
-        add_button.setOnClickListener(new View.OnClickListener(){
+        add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
                 DB_MyDatabaseHelper myDB = new DB_MyDatabaseHelper(DB_AddActivity.this);
@@ -37,6 +37,7 @@ public class DB_AddActivity extends AppCompatActivity {
                         address_input.getText().toString().trim(),
                         PID_input.getText().toString().trim(),
                         intro_input.getText().toString().trim());
+                myDB.UpdateTourStatus("1", myDB.getCurrentAt(), myDB.getTotalSitesNumber()+1);
                 finish();
             }
         });
