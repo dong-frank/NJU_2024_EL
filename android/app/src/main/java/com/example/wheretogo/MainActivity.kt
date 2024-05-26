@@ -72,8 +72,7 @@ class MainActivity : BaseActivity() {
         }
         binding.sqlite.setOnClickListener {
             val intent =Intent(this, DB_MainActivity::class.java)
-            startActivity(intent);
-            Log.d("MainActivity", "Exit")
+            startActivity(intent)
         }
         binding.exit.setOnClickListener {
             Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
