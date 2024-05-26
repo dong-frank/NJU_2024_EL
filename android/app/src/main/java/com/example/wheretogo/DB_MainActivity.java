@@ -17,7 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class DB_MainActivity extends AppCompatActivity{
+public class DB_MainActivity extends BaseActivity{
     // Declarations for interface of MainActivity
     RecyclerView recyclerView;
     FloatingActionButton add_button;

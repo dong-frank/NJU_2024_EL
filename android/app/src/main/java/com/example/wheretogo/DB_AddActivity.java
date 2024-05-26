@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class DB_AddActivity extends AppCompatActivity {
+public class DB_AddActivity extends BaseActivity {
     EditText name_input, city_input, address_input;
     EditText PID_input, intro_input;
     Button add_button;

@@ -70,12 +70,16 @@ class GameMapActivity : BaseActivity() {
     var isCorrect : Boolean = false
     var mode : Boolean = true
     var introduce : String =""
+    val data_place: Array<String> = arrayOf("南京大学汉口路校门", "梧桐大道", "夫子庙","玄武湖","紫峰大厦")
+    var now_place: Int = 0
 
     @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @SuppressLint("SetTextI18n", "ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_map_layout)
+        val myDB = DB_MyDatabaseHelper(this)
+//        myDB.UpdateTourStatus("1",0,myDB.getTotalSitesNumber())
         initView()
         updateUI()
         val intent = intent
@@ -221,6 +225,31 @@ class GameMapActivity : BaseActivity() {
                     false
                 }
             }
+            editText_guess?.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    // 输入文字结束时
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // 输入文字前
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // 输入文字中
+                    guessPlaceNameAddress = s.toString()
+                    Log.i("PanaTool", guessPlaceNameAddress.toString())
+                    sugSearch(wherePlaceNameCity,guessPlaceNameAddress,this@GameMapActivity)
+                }
+            })
+            editText_guess?.setOnFocusChangeListener { v, hasFocus ->
+                if(hasFocus){
+                    //获取焦点时
+                    listView?.visibility = View.VISIBLE
+                } else {
+                    //失去焦点时
+                    listView?.visibility = View.GONE
+                }
+            }
             //是这吗按钮
             button_guess?.setOnClickListener {
                 guessPlaceNameAddress = editText_guess?.text.toString()
@@ -236,10 +265,11 @@ class GameMapActivity : BaseActivity() {
 
     private fun gameStart(){
         //TODO:从数据库获取信息
+        val myDB_help =DB_MyDatabaseHelper(this)
         wherePlaceNameCity="南京"
-        wherePlaceNameAddress="紫峰大厦"
-        wherePlacePID="0900250012221008122348381AD"
-        introduce="这是南京第一高楼"
+        wherePlaceNameAddress=myDB_help.nextSiteName
+        wherePlacePID=myDB_help.getSelectedPid(wherePlaceNameAddress)
+        introduce=myDB_help.getSelectedIntro(wherePlaceNameAddress)
         getTargetPoint(wherePlaceNameCity,wherePlaceNameAddress,this@GameMapActivity)
     }
 
@@ -254,11 +284,11 @@ class GameMapActivity : BaseActivity() {
 
     private fun continueGame(){
         //TODO:从下一条数据库中下一条数据获取信息
-        wherePlaceNameCity="南京"
-        wherePlaceNameAddress="南京大学"
-        wherePlacePID="09002500121709071035569301I"
-        introduce="这是南京最高学府"
-        getTargetPoint(wherePlaceNameCity,wherePlaceNameAddress,this@GameMapActivity)
+        now_place++
+
+        gameStart()
+        editText_guess?.setText("")
+
     }
     private fun testPanoByType(type : Int) {
         mPanaView?.setShowTopoLink(true)
@@ -321,8 +351,13 @@ class GameMapActivity : BaseActivity() {
             listView?.setOnItemClickListener{ parent, view, position, id ->
                 //获取点击的建议项
                 val suggestion = suggestions[position]
-                editText_address?.setText(suggestion.key)
-                editText_address?.clearFocus()
+                if(!mode) {
+                    editText_address?.setText(suggestion.key)
+                    editText_address?.clearFocus()
+                }else {
+                    editText_guess?.setText(suggestion.key)
+                    editText_guess?.clearFocus()
+                }
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
@@ -380,7 +415,8 @@ class GameMapActivity : BaseActivity() {
 
     private fun handleAddClick() {
         //TODO:增加一个地点
-        val myDB : DB_MyDatabaseHelper = DB_MyDatabaseHelper(this)
+        val intent = Intent(this, DB_AddActivity::class.java)
+        startActivity(intent)
 
     }
     private fun handleMapClick() {

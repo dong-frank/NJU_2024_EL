@@ -305,6 +305,30 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
     // getNextSite part：
 
+
+
+    // call this function to get the name of next site;
+    String getNextSiteName(){
+        //step1 : find current_at (which is a counter)
+        int current_at = getCurrentAt();
+        if(current_at >= getTotalSitesNumber()){
+            current_at = 1;
+        }else{
+            current_at++;
+        }
+
+        //step1.2 change value of the table;
+        UpdateTourStatus("1",current_at,getTotalSitesNumber());
+        //step2 : find row_id of the current_at;
+        int row_id = getRow_IdByCurrentAt(current_at);
+
+        //step3: use row_id to find site_name;
+        if(row_id == 0){
+            Toast.makeText(context,"WENT WRONG!",Toast.LENGTH_SHORT).show();
+        }
+        return getNameByRowId(row_id);
+    }
+
     // cooperate with the function below;
     String getNameByRowId(int row_id){
 
@@ -322,24 +346,6 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
         return siteName;
     }
-
-    // call this function to get the name of next site;
-    String getNextSiteName(){
-        //step1 : find current_at (which is a counter)
-        int current_at = getCurrentAt();
-        current_at++;
-
-        //step1.2 change value of the table;
-        UpdateTourStatus("1",current_at,getTotalSitesNumber());
-        //step2 : find row_id of the current_at;
-        int row_id = getRow_IdByCurrentAt(current_at);
-
-        //step3: use row_id to find site_name;
-        if(row_id == 0){
-            Toast.makeText(context,"WENT WRONG!",Toast.LENGTH_SHORT).show();
-        }
-        return getNameByRowId(row_id);
-    }
     int getCurrentAt(){
         String query = "SELECT * FROM "+ TABLE_NAME_STATUS +" WHERE _id = 1";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -354,6 +360,11 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
                 current_at = cursor.getInt(1);
             }
         }
+        int limit = getTotalSitesNumber();
+        if(current_at >= limit){
+            current_at = limit;
+        }
+
         return current_at;
     }
     int getTotalSitesNumber(){
@@ -367,7 +378,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
         int total_sites_number = 1;
         if(cursor.getCount() == 1) {
             while (cursor.moveToNext()) {
-                total_sites_number = cursor.getInt(1);
+                total_sites_number = cursor.getInt(2);
             }
         }
         return  total_sites_number;
