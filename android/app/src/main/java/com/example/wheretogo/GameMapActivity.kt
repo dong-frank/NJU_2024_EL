@@ -56,6 +56,7 @@ class GameMapActivity : BaseActivity() {
     var textView_systemOutput: TextView? = null
     var listView: ListView? = null
     var button_search : Button? = null
+    var button_guess : Button? = null
     var toolbar: com.google.android.material.appbar.MaterialToolbar? = null
     var goPlaceNameCity : String = "北京"
     var goPlaceNameAddress : String = "海淀区上地十街10号"
@@ -108,6 +109,7 @@ class GameMapActivity : BaseActivity() {
         textView_systemOutput = findViewById<TextView>(R.id.system_output)
         listView = findViewById<ListView>(R.id.sugsearchlist)
         button_search = findViewById<Button>(R.id.search)
+        button_guess = findViewById<Button>(R.id.guess)
         toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.title_toolbar)
         mPanaView?.accessibilityDelegate = object : View.AccessibilityDelegate() {
             override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfo) {
@@ -130,8 +132,10 @@ class GameMapActivity : BaseActivity() {
             textView_systemOutput?.text="随便走走吧"
             editText_city?.visibility = View.VISIBLE
             editText_address?.visibility = View.VISIBLE
+            editText_guess?.visibility = View.GONE
             editText_guess?.hint = "想去哪？"
-            button_search?.text = "去那看看"
+            button_search?.visibility= View.VISIBLE
+            button_guess?.visibility= View.GONE
             editText_guess?.isEnabled=false
             textView_introduce?.visibility = View.VISIBLE
             mPanaView?.setShowTopoLink(true)
@@ -194,10 +198,13 @@ class GameMapActivity : BaseActivity() {
 
         }else {
             //猜测模式
+            textView_systemOutput?.text="猜猜这是哪里"
             editText_city?.visibility = View.GONE
             editText_address?.visibility = View.GONE
+            editText_guess?.visibility = View.VISIBLE
             editText_guess?.hint = "你知道这是哪吗?"
-            button_search?.text = "是这吗"
+            button_search?.visibility= View.GONE
+            button_guess?.visibility= View.VISIBLE
             editText_guess?.isEnabled=true
             textView_introduce?.visibility = View.GONE
             mPanaView?.setShowTopoLink(false)
@@ -215,7 +222,7 @@ class GameMapActivity : BaseActivity() {
                 }
             }
             //是这吗按钮
-            button_search?.setOnClickListener {
+            button_guess?.setOnClickListener {
                 guessPlaceNameAddress = editText_guess?.text.toString()
                 val result = wherePlaceNameCity
                 //隐藏键盘

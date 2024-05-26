@@ -8,77 +8,86 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/user_guess_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
-            <EditText
-                android:id="@+id/user_guess"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:gravity="center"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                tools:ignore="LabelFor" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <TextView
-            android:id="@+id/system_output"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <EditText
-        android:id="@+id/panodemo_main_input_city"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:hint="城市"
-        android:imeOptions="actionDone"
-        android:inputType="text"
-        android:maxLines="2" />
-
-    <EditText
-        android:id="@+id/panodemo_main_input_address"
-        android:layout_width="289dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:hint="地址"
-        android:imeOptions="actionDone"
-        android:inputType="text"
-        android:maxLines="2"
-        />
+        <EditText
+            android:id="@+id/user_guess"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:layout_margin="10dp"/>
 
 
-    <TextView
-                android:id="@+id/introduce"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <EditText
+            android:id="@+id/panodemo_main_input_city"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="城市"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_marginTop="10dp"
             />
-            <Button
-                android:id="@+id/search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="去那儿!"
-                android:background="@drawable/search_button"
-                android:layout_toRightOf="@+id/panodemo_main_input_address"
-                />
 
+        <EditText
+            android:id="@+id/panodemo_main_input_address"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="地址"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_toRightOf="@+id/panodemo_main_input_city"
+            android:layout_margin="10dp"
+            />
+
+
+        <TextView
+            android:id="@+id/introduce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <Button
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去那看看!"
+            android:background="@drawable/search_button"
+            android:layout_toRightOf="@+id/panodemo_main_input_address"
+            android:layout_margin="5dp"
+            />
+        <Button
+            android:id="@+id/guess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="是这吗?"
+            android:background="@drawable/search_button"
+            android:layout_toRightOf="@+id/user_guess"
+            android:layout_margin="5dp"
+            />
     </RelativeLayout>
-            <com.baidu.lbsapi.panoramaview.PanoramaView
-                android:id="@+id/panorama"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="这是一个全景图片"
-                />
-            <ListView
-                android:id="@+id/sugsearchlist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:visibility="gone"
-                />
+    <TextView
+        android:id="@+id/system_output"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+    <com.baidu.lbsapi.panoramaview.PanoramaView
+        android:id="@+id/panorama"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="这是一个全景图片" />
+
+    <ListView
+        android:id="@+id/sugsearchlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="gone"
+        />
 </LinearLayout>
