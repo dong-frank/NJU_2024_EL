@@ -407,6 +407,9 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             Toast.makeText(context,"Successful!",Toast.LENGTH_SHORT).show();
         }
     }
+    void ResetTourStatus(){
+        UpdateTourStatus("1",0,getTotalSitesNumber());
+    }
 
 
 
