@@ -23,6 +23,8 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
 
     private Activity activity;// for
 
+    private DB_MyDatabaseHelper myDB;
+    private int TourStatus_Curren_At;
     // Constructor;
     DB_CustomAdapter(Activity activity, Context context,
                      ArrayList site_id, ArrayList site_name, ArrayList site_city, ArrayList site_address,ArrayList site_PID, ArrayList site_intro){
@@ -36,6 +38,10 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
         this.site_address = site_address;
         this.site_PID = site_PID;
         this.site_intro = site_intro;
+
+        //TODO: CHECK IF THIS IS CORRECT...
+        myDB = new DB_MyDatabaseHelper(context);
+        TourStatus_Curren_At = myDB.getCurrentAt();
     }
 
     // This method is called when the adapter needs to create a new ViewHolder
@@ -52,16 +58,26 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
     @NonNull
     @Override
     public void onBindViewHolder(@NonNull DB_CustomAdapter.MyViewHolder holder, final int position) {
-        holder.site_name_txt.setText(String.valueOf(site_name.get(position)));
-        holder.site_city_txt.setText(String.valueOf(site_city.get(position)));
-        holder.site_address_txt.setText(String.valueOf(site_address.get(position)));
-        holder.site_PID_txt.setText(String.valueOf(site_PID.get(position)));
-        holder.site_intro_txt.setText(String.valueOf(site_intro.get(position)));
+
+        if(position < TourStatus_Curren_At){
+            holder.site_name_txt.setText(String.valueOf(site_name.get(position)));
+            holder.site_city_txt.setText(String.valueOf(site_city.get(position)));
+            holder.site_address_txt.setText(String.valueOf(site_address.get(position)));
+            holder.site_PID_txt.setText(String.valueOf(site_PID.get(position)));
+            holder.site_intro_txt.setText(String.valueOf(site_intro.get(position)));
+        }
+        else{
+            holder.site_name_txt.setText("???");
+            holder.site_city_txt.setText("???");
+            holder.site_address_txt.setText("???");
+            holder.site_PID_txt.setText("???");
+            holder.site_intro_txt.setText("???");
+        }
 
         // this OnClickListener is used for update (so that you can touch the line to modify it)
         holder.mainLayout.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {//TODO is this clear now??
+            public void onClick(View view) {
                 Intent intent = new Intent(context, DB_UpdateActivity.class);
                 intent.putExtra("id",String.valueOf(site_id.get(position)));
                 intent.putExtra("name",String.valueOf(site_name.get(position)));
@@ -98,3 +114,4 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
         }
     }
 }
+
