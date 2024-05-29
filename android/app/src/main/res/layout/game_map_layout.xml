@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -8,35 +8,47 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/city_guess"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="25dp"
+            android:layout_below="@+id/title"
+            />
+
         <EditText
             android:id="@+id/user_guess"
-            android:layout_width="300dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:gravity="center"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/title"
+            android:layout_toRightOf="@+id/city_guess"
+            android:layout_toEndOf="@+id/city_guess" />
 
 
         <EditText
             android:id="@+id/panodemo_main_input_city"
-            android:layout_width="50dp"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="城市"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
-            android:layout_marginTop="10dp"
+            android:layout_margin="10dp"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/title"
             />
 
         <EditText
             android:id="@+id/panodemo_main_input_address"
-            android:layout_width="250dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="地址"
@@ -45,13 +57,18 @@
             android:maxLines="1"
             android:layout_toRightOf="@+id/panodemo_main_input_city"
             android:layout_margin="10dp"
-            />
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/title"
+            android:layout_toEndOf="@+id/panodemo_main_input_city" />
 
 
         <TextView
             android:id="@+id/introduce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/panodemo_main_input_address"
             />
         <Button
             android:id="@+id/search"
@@ -61,6 +78,8 @@
             android:background="@drawable/search_button"
             android:layout_toRightOf="@+id/panodemo_main_input_address"
             android:layout_margin="5dp"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/title"
             />
         <Button
             android:id="@+id/guess"
@@ -70,23 +89,36 @@
             android:background="@drawable/search_button"
             android:layout_toRightOf="@+id/user_guess"
             android:layout_margin="5dp"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/title"
             />
-        <ListView
-            android:id="@+id/sugsearchlist"
+
+        <TextView
+            android:id="@+id/system_output"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:visibility="gone"
-            android:layout_below="@+id/user_guess"/>
-    </RelativeLayout>
-    <TextView
-        android:id="@+id/system_output"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"/>
+            android:gravity="center"
+            android:layout_marginTop="60dp"
+            android:layout_below="@+id/title"
+            />
     <com.baidu.lbsapi.panoramaview.PanoramaView
         android:id="@+id/panorama"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="这是一个全景图片" />
-</LinearLayout>
+        android:contentDescription="这是一个全景图片"
+        android:layout_marginTop="100dp"
+        android:layout_below="@+id/title"
+        />
+    <ListView
+        android:id="@+id/sugsearchlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:visibility="visible"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/title"/>
+    <com.example.wheretogo.BottomNavigationLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</RelativeLayout>

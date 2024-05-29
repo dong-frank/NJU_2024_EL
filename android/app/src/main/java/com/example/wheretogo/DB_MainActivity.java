@@ -1,15 +1,19 @@
 package com.example.wheretogo;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +23,13 @@ import java.util.ArrayList;
 
 public class DB_MainActivity extends BaseActivity{
     // Declarations for interface of MainActivity
+
+    public static void actionStart(Context context, String data1, String data2) {
+        Intent intent = new Intent(context, DB_MainActivity.class);
+        intent.putExtra("param1", data1);
+        intent.putExtra("param2", data2);
+        context.startActivity(intent);
+    }
     RecyclerView recyclerView;
     FloatingActionButton add_button;
 
@@ -36,7 +47,6 @@ public class DB_MainActivity extends BaseActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db_main);
-
         // initializing buttons
         recyclerView = findViewById(R.id.recyclerView);
         add_button = findViewById(R.id.add_button);
@@ -100,6 +110,4 @@ public class DB_MainActivity extends BaseActivity{
             }
         }
     }
-
-
 }

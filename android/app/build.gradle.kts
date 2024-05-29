@@ -9,10 +9,9 @@ plugins {
 android {
     signingConfigs {
         getByName("debug") {
-            storeFile = file("C:\\Users\\18446\\Leon.jks")
-            storePassword = "112233"
-            keyAlias = "key0";
-            keyPassword = "112233"
+            storeFile = file("C:\\Users\\Frank\\.android\\debug.keystore")
+            storePassword = "android"
+            keyPassword = "android"
         }
         create("release") {
             storeFile = file("D:\\android_key\\wheretogo_released_key.jks")
@@ -100,4 +99,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.material)
+
+
+
+
+    implementation ("androidx.appcompat:appcompat:1.3.1")
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation ("com.google.android.material:material:1.4.0")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
 }

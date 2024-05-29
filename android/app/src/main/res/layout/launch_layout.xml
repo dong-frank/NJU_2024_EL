@@ -50,5 +50,8 @@
         android:text="退出"
         android:background="@drawable/button"
         />
+    <com.example.wheretogo.BottomNavigationLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

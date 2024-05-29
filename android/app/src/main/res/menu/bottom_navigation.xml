@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add"
+        android:title="鼠鼠去过哪"
+        android:icon="@drawable/add_icon"
+        />
+    <item
+        android:id="@+id/home"
+        android:title="主页"
+        android:icon="@drawable/new_ic_launcher"
+        />
+    <item
+        android:id="@+id/map"
+        android:title="随便看看"
+        android:icon="@drawable/map_icon"
+        />
+</menu>

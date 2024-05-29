@@ -25,11 +25,6 @@ class SplashScreenActivity : BaseActivity() {
         @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                window.statusBarColor = Color.TRANSPARENT
-            }
             setContentView(R.layout.activity_splash_screen)
 
             Handler().postDelayed({

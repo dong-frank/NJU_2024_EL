@@ -11,7 +11,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -27,6 +29,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.UnsupportedEncodingException
+import kotlin.math.abs
 
 
 /**
@@ -37,6 +40,40 @@ class MainActivity : BaseActivity() {
     var mBMapManager: BMapManager? = null
     //    val context = applicationContext
     private var btnPrivacy: Button? = null
+    private val gestureDetector: GestureDetector by lazy {
+        GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onFling(
+                e1: MotionEvent?,
+                e2: MotionEvent,
+                velocityX: Float,
+                velocityY: Float
+            ): Boolean {
+                if (e1 != null) {
+                    if (e1.x - e2.x > SWIPE_MIN_DISTANCE && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        // 用户向左滑动，启动地图模式
+                        GameMapActivity.actionStart(this@MainActivity, false, "data2")
+                        overridePendingTransition(com.example.wheretogo.R.anim.slide_in_right, com.example.wheretogo.R.anim.slide_out_left)
+                        return true
+                    } else if (e2.x - e1.x > SWIPE_MIN_DISTANCE && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        // 用户向右滑动，启动鼠鼠去过哪里
+                        startActivity(Intent(this@MainActivity, DB_MainActivity::class.java))
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                        return true
+                    }
+                }
+                return false
+            }
+        })
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
+    }
+
+    companion object {
+        private const val SWIPE_MIN_DISTANCE = 120
+        private const val SWIPE_THRESHOLD_VELOCITY = 200
+    }
     /**
      * 获取返回数据
      */
@@ -67,7 +104,7 @@ class MainActivity : BaseActivity() {
 
 
         binding.startGame.setOnClickListener {
-            GameMapActivity.actionStart(this, "data1", "data2")//启动游戏界面,data1和data2是传入的数据
+            GameMapActivity.actionStart(this, true, "data2")//启动游戏界面,data1和data2是传入的数据
             Log.d("MainActivity", "Game Start and go to GameActivity")
         }
         binding.sqlite.setOnClickListener {

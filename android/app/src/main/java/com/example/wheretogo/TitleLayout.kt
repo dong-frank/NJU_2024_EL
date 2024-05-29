@@ -18,7 +18,7 @@ class TitleLayout(context: Context, attrs: AttributeSet) : LinearLayout(context,
     init {
         LayoutInflater.from(context).inflate(R.layout.title, this)
         val activity = context as Activity
-        val title_toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.title_toolbar)
+        val title_toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.title_toolbar)
         when (activity.javaClass.simpleName) {
             "MainActivity" -> title_toolbar.setTitle("鼠鼠去那儿")
             "GameMapActivity" -> {
