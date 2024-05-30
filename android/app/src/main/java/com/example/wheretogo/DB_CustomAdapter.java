@@ -14,15 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-//QUESTION: I am feeling extremely confused about the MyViewHolder...
 public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyViewHolder> {
     private Context context;// LOCAL context (QUESTION)
     private ArrayList site_id, site_name, site_city, site_address;
-
     private ArrayList site_PID , site_intro;
-
-    private Activity activity;// for
-
+    private Activity activity;
     private DB_MyDatabaseHelper myDB;
     private int TourStatus_Curren_At;
     // Constructor;
@@ -39,13 +35,11 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
         this.site_PID = site_PID;
         this.site_intro = site_intro;
 
-        //TODO: CHECK IF THIS IS CORRECT...
         myDB = new DB_MyDatabaseHelper(context);
         TourStatus_Curren_At = myDB.getCurrentAt();
     }
 
     // This method is called when the adapter needs to create a new ViewHolder
-    //
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -54,7 +48,7 @@ public class DB_CustomAdapter extends RecyclerView.Adapter<DB_CustomAdapter.MyVi
         return new MyViewHolder(view);
     }
 
-    //  the onBindViewHolder is called repeatedly as the user scrolls, to update the ViewHolders with the correct data.
+    //  This method is called repeatedly as the user scrolls, to update the ViewHolders with the correct data.
     @NonNull
     @Override
     public void onBindViewHolder(@NonNull DB_CustomAdapter.MyViewHolder holder, final int position) {

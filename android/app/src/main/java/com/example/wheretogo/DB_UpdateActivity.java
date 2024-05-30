@@ -11,8 +11,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class DB_UpdateActivity extends AppCompatActivity {
-    //declaration FOR the buttons
-    //TODO: KEEP AN EYE FOR THE PID_INPUT AND ADDRESS_INPUT __ MIXED UP ONCE;
     EditText name_input2, city_input2, PID_input2;
     EditText address_input2,intro_input2;
     Button update_button,delete_button;
@@ -34,7 +32,7 @@ public class DB_UpdateActivity extends AppCompatActivity {
         update_button = findViewById(R.id.update_button);
         delete_button = findViewById(R.id.delete_button);
 
-        // important to call getandset..() first
+        // call getAndSet..() first
         getAndSetIntentData();
 
 
@@ -43,8 +41,7 @@ public class DB_UpdateActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // called after calling getAndSetIntentData()
                 DB_MyDatabaseHelper myDB = new DB_MyDatabaseHelper((DB_UpdateActivity.this));
-                // it's weird that in the video there are no such lines to get title and author update...
-                //     ## note that it's possible to change text to string~
+
                 name = name_input2.getText().toString().trim();
                 city = city_input2.getText().toString().trim();
                 address = address_input2.getText().toString().trim();
@@ -63,8 +60,8 @@ public class DB_UpdateActivity extends AppCompatActivity {
 
     }
 
-    // if there are extra info passed in, we save them and later display them.
-    void getAndSetIntentData(){//TODO: ATTENTION!!! CHECK ALL INTENT USAGE
+    // 从上一个Activity获取数据并设置到对应控件中进行显示
+    void getAndSetIntentData(){
         if(getIntent().hasExtra("id") && getIntent().hasExtra("name")
                 && getIntent().hasExtra("city") && getIntent().hasExtra("address")
                 && getIntent().hasExtra("PID")&& getIntent().hasExtra("intro")) {

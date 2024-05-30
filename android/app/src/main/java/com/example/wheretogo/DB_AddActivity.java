@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 public class DB_AddActivity extends BaseActivity {
     EditText name_input, city_input, address_input;
@@ -31,7 +28,7 @@ public class DB_AddActivity extends BaseActivity {
             @Override
             public void onClick(View view){
                 DB_MyDatabaseHelper myDB = new DB_MyDatabaseHelper(DB_AddActivity.this);
-                myDB.addBook(
+                myDB.addSite(
                         name_input.getText().toString().trim(),
                         city_input.getText().toString().trim(),
                         address_input.getText().toString().trim(),

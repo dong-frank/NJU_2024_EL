@@ -6,12 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
-
+import java.util.ArrayList;
 
 
 import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
 
 public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
@@ -150,7 +148,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "龙门石窟;龙门石窟-西北服务区;龙门石窟景区-票务中心";
             String city_default = "洛阳";
             String address_default = "洛阳市洛龙区伊河两岸";
-            String PID_default = "09027800001408051441056766E";//TODO:
+            String PID_default = "0902780001170525124037000IN";
             String intro_default = "作为东汉时期丝绸之路的起点,洛阳居天下之中,地处洛水之阳,曾为十三王朝古都。说起洛阳,必不可不提____;____是世界上造像最多、规模最大的石刻艺术宝库,“中国石刻艺术的最高峰”;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -166,7 +164,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "秦始皇陵;秦始皇兵马俑博物馆;秦始皇陵地宫;秦始皇";
             String city_default = "西安";
             String address_default = "西安市临潼区骊山北麓";
-            String PID_default = "01021500001406161330597215M";//TODO:
+            String PID_default = "0902150001160228133137000IN";
             String intro_default = "六朝古都,丝绸之路的最初起点,提起西安,涌入脑海的便是千古一帝——___,步入西安,感受古代中国的辉煌与伟大;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -312,7 +310,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "亚龙湾;亚龙湾国家旅游度假区;亚龙湾站;亚龙湾中心广场";
             String city_default = "三亚";
             String address_default = "三亚亚龙湾国家旅游度假区";
-            String PID_default = "09027100011511020721599416O";//TODO:
+            String PID_default = "0102710000131212230847233S5";
             String intro_default = "___以其美丽的海滩和清澈的海水而闻名;这个地区是热带天堂的缩影,拥有洁白的沙滩、郁郁葱葱的热带植被和丰富的海洋生物;游客可以在这里享受宁静的自然环境，体验当地的文化和历史;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -329,7 +327,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "鼓浪屿;厦门鼓浪屿码头;鼓浪屿轮渡码头";
             String city_default = "厦门";
             String address_default = "福建省厦门市思明区鼓浪屿";
-            String PID_default = "0900190012200409162211364HA";//TODO:
+            String PID_default = "0900190001160302142343720IN";
             String intro_default = "游玩被誉为海上花园的厦门,自然少不了___;___,岛西南有一海蚀岩洞受浪潮冲击,声如擂鼓,其上亦有钢琴博物馆;置身其中,聆听海浪与钢琴交奏的曲乐,亦是一大乐事;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -345,7 +343,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "情侣路;珠海情侣路海滨浴场;情侣中路-道路;情侣南路-道路;情侣北路-道路";
             String city_default = "珠海";
             String address_default = "广东省珠海市香洲区";
-            String PID_default = "09006300122111081450372216P";//TODO:
+            String PID_default = "2400720012221220181449187OI";
             String intro_default = "___是一条风景优美的海滨步行路线;沿途植被葱郁,风景如画,可以欣赏到珠海独特的海滨风光,远眺大海和对岸的澳门景色,感受海风拂面的清爽;古代留下的传闻更是为其增添了一份浪漫的氛围,是情侣约会和散步的绝佳场所;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -377,7 +375,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "金沙滩;金沙滩景区";
             String city_default = "青岛";
             String address_default = "山东省青岛市经济技术开发区";
-            String PID_default = "09016800122208231117254942R";//TODO:
+            String PID_default = "0901680012171116162102000IN";
             String intro_default = "___以其绵延不断的金色细沙和清澈碧蓝的海水而闻名,被誉为\"东方夏威夷\";无论是在夏日沐浴阳光,还是漫步观海赏景,都能让人感受到大自然的魅力和海滨度假的乐趣,是一处值得一游的海滨胜地;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -393,7 +391,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "玉龙雪山;玉龙雪山国家风景名胜区;玉龙雪山国家风景名胜区-售票处";
             String city_default = "丽江";
             String address_default = "云南省丽江市北面";
-            String PID_default = "09025900122104101434285135L";//TODO:
+            String PID_default = "09025900122104101434285135L";
             String intro_default = "____冰雪覆盖,终年白雪皑皑,山上高山冰川和奇峰怪石构成了一幅壮美的画卷;____景区内气候凉爽宜人,是夏季避暑的理想胜地;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -424,9 +422,9 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             //Default 23:
             String name_defalut = "小寨天坑;小寨天坑风景区;小寨天坑景观点";
             String city_default = "重庆";
-            String address_default = "重庆市奉节县小寨村";
-            String PID_default = "09029200121907171639012315D";//TODO:
-            String intro_default = "____洞穴错落有致,岩壁陡峭,陡峭的岩壁上覆盖着各种植被,神秘而蔚为壮观;____内生长着丰富的植被,有许多珍稀的植物和野生动物,被誉为“生态宝库”;";
+            String address_default = "重庆市武隆区仙女镇";
+            String PID_default = "0902920012180322124942000IN";
+            String intro_default = "___是重庆最大的国家地质公园，以天然的天坑群、天生桥群、地缝奇观、溪泉飞瀑为主要特色，规模宏大且可进入性强，主要包括武隆天坑、天生三桥景区和武隆地缝景区。公园内岩溶地质、地貌特征尤为突出，拥有世界最大天生桥群和世界第二大天坑群，及集喀斯特地貌奇观为一体的地表裂缝。";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
             cv.put(COLUMN_CITY, city_default);
@@ -441,7 +439,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "泰山;泰山风景名胜区;泰山广场";
             String city_default = "泰安";
             String address_default = "山东省泰安市";
-            String PID_default = "09017100001408101520263116C";//TODO:
+            String PID_default = "0901710012171104154611000IN";
             String intro_default = "__风景秀丽,山势险峻,峰巅平坦开阔,龙脊蜿蜒,雄伟壮观的景观令人叹为观止;杜甫的诗句“造化钟神秀，阴阳割昏晓”更是对其的唯美形容;";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -457,7 +455,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
             String name_defalut = "敕勒川草原;敕勒川草原文化旅游区;敕勒川公园;敕勒川";
             String city_default = "呼和浩特";
             String address_default = "内蒙古自治区呼和浩特市新城区内蒙古少数民族群众文化体育运动中心附近";
-            String PID_default = "0901310012210601165038688HR";//TODO:
+            String PID_default = "0901310012210606122027335HB";
             String intro_default = "_____地势平坦,绿草茵茵,湖泊散布其间,景色宜人,曾经是古代匈奴和汉朝的战场,历史悠久,留下了许多古代遗迹和文化遗产;天苍苍,野茫茫,风吹草低见牛羊;___,阴山下,天似穹庐,笼盖四野";
             ContentValues cv = new ContentValues();
             cv.put(COLUMN_NAME, name_defalut);
@@ -622,7 +620,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addBook(String name, String city, String address, String PID, String intro){
+    void addSite(String name, String city, String address, String PID, String intro){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 

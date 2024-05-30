@@ -23,7 +23,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -37,7 +36,6 @@ import com.example.wheretogo.PanaTool.getGuessPoint
 import com.example.wheretogo.PanaTool.getTargetPoint
 import com.example.wheretogo.PanaTool.sugSearch
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.json.JSONArray
 import org.json.JSONObject
 import com.baidu.lbsapi.tools.Point as Point1
 
@@ -497,7 +495,7 @@ class GameMapActivity : BaseActivity() {
             .setPositiveButton("确定") { dialog, _ ->
                 val intro = editText.text.toString()
                 goPlace.intro = arrayOf(intro)
-                myDB_help.addBook(goPlace.address,goPlace.address,goPlace.city,goPlace.pid,goPlace.intro[0])
+                myDB_help.addSite(goPlace.address,goPlace.address,goPlace.city,goPlace.pid,goPlace.intro[0])
                 myDB_help.UpdateTourStatus("1", myDB_help.getCurrentAt(), myDB_help.getTotalSitesNumber() + 1)
                 dialog.dismiss()
             }

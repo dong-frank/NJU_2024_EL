@@ -38,10 +38,8 @@ public class DB_MainActivity extends BaseActivity{
     ArrayList<String> site_id, site_name, site_city, site_address;
     ArrayList<String> site_PID,site_intro;
 
-    // QUESTION:
     DB_CustomAdapter DBCustomAdapter;
 
-    // QUESTION: constructor???
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -72,7 +70,6 @@ public class DB_MainActivity extends BaseActivity{
 
 
         storeDataInArrays();
-//TODO
 
         DBCustomAdapter = new DB_CustomAdapter(DB_MainActivity.this,this, site_id, site_name, site_city, site_address,site_PID,site_intro);
         recyclerView.setAdapter(DBCustomAdapter);
