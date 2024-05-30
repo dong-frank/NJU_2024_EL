@@ -10,6 +10,7 @@
         android:layout_alignParentBottom="true"
 
 
+        app:itemIconTint="@null"
         app:itemBackground="@color/colorPrimary"
         app:menu="@menu/bottom_navigation"
         />

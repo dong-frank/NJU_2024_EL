@@ -14,7 +14,7 @@ class BottomNavigationLayout (context: Context, attrs: AttributeSet) : LinearLay
         LayoutInflater.from(context).inflate(R.layout.bottomnavigation, this)
         val bottomNavigationLayout =
             findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation_bar)
-
+        bottomNavigationLayout.setItemIconTintList(null)
 
 
     }

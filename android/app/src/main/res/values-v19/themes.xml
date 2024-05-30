@@ -3,5 +3,6 @@
     <style name="Theme.WhereToGo" parent="Theme.AppCompat.Light.NoActionBar" tools:ignore="DuplicateDefinition">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 </resources>

@@ -35,7 +35,7 @@
 
         <EditText
             android:id="@+id/panodemo_main_input_city"
-            android:layout_width="55dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="城市"
@@ -49,7 +49,7 @@
 
         <EditText
             android:id="@+id/panodemo_main_input_address"
-            android:layout_width="220dp"
+            android:layout_width="195dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="地址"
@@ -128,10 +128,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="50dp"
-            android:layout_marginBottom="100dp"
+            android:layout_marginBottom="110dp"
             android:clickable="true"
             android:focusable="true"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            app:srcCompat="@drawable/ic_add" />
+            app:srcCompat="@drawable/fullscreen" />
 </RelativeLayout>

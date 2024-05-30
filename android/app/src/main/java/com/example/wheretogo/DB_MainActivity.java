@@ -46,6 +46,7 @@ public class DB_MainActivity extends BaseActivity{
         // initializing buttons
         com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigationView = findViewById(com.example.wheretogo.R.id.bottom_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.map);
+        bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.home) {

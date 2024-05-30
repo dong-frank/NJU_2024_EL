@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -54,18 +55,7 @@ class GameMapActivity : BaseActivity() {
         }
     }
 
-    //陀螺仪传感器
-    private lateinit var sensorManager: SensorManager
-    private val sensorEventListener = object : SensorEventListener {
-        override fun onSensorChanged(event: SensorEvent) {
-            val scaleFactor = 2f
-            mPanaView?.panoramaPitch = event.values[1]*scaleFactor
-            mPanaView?.panoramaHeading = event.values[0]*scaleFactor
-        }
-
-        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        }
-    }
+    lateinit var sensorManager: SensorManager
     private val myDB_help =DB_MyDatabaseHelper(this)
     private var mPanaView: PanoramaView? = null
     private var mSuggestionSearch : SuggestionSearch? = null
@@ -86,10 +76,24 @@ class GameMapActivity : BaseActivity() {
     private var isCorrect : Boolean = false
     private var mode : Boolean = true
     private var tryCount =0
+    private var isFullScreen = false
 
     private var wherePlace : Place?= null
     private var guessPlace = Place("南京","南京大学")
     private var goPlace = Place("南京","南京大学")
+
+    val sensorEventListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            if(isFullScreen) {
+                val scaleFactor = 2f
+                mPanaView?.panoramaPitch = event.values[1] * scaleFactor
+                mPanaView?.panoramaHeading = event.values[0] * scaleFactor
+            }
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        }
+    }
     @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @SuppressLint("SetTextI18n", "ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +108,8 @@ class GameMapActivity : BaseActivity() {
         if (intent != null) {
             startPanoView(intent.getIntExtra("type", -1))
         }
+        //陀螺仪传感器
+
         //顶部toolbar监听器
         toolbar?.setOnMenuItemClickListener() {
             when(it.itemId){
@@ -117,6 +123,7 @@ class GameMapActivity : BaseActivity() {
             true
         }
         bottomNavigationView?.selectedItemId = R.id.map
+        bottomNavigationView?.setItemIconTintList(null)
         bottomNavigationView?.setOnItemSelectedListener{
             when (it.itemId) {
                 R.id.home -> {
@@ -145,7 +152,7 @@ class GameMapActivity : BaseActivity() {
             sensorEventListener,
             sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
             SensorManager.SENSOR_DELAY_GAME
-        )
+            )
         //游戏开始
         gameStart()
         updateUI()
@@ -180,23 +187,31 @@ class GameMapActivity : BaseActivity() {
             }
         }
         //全屏按钮
-        //TODO:正确的全屏按钮
         val fullscreenButton: FloatingActionButton = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fullscreen_button)
+        val originalLayoutParams = mPanaView?.layoutParams as RelativeLayout.LayoutParams
         fullscreenButton.setOnClickListener {
-            val layoutParams = mPanaView?.layoutParams
-            if (layoutParams?.width == ViewGroup.LayoutParams.MATCH_PARENT && layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
-                // 如果已经是全屏，那么恢复原来的大小
-                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                Log.i("Fullscreen", "Exit fullscreen")
-            } else {
-                // 如果不是全屏，那么设置为全屏
-                layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
-                layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
-                Log.i("Fullscreen", "Enter fullscreen")
+            if(!isFullScreen) {
+                val layoutParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT
+                )
+
+                layoutParams.topMargin = 0
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    layoutParams.removeRule(RelativeLayout.BELOW)
+                }
+
+                mPanaView?.layoutParams = layoutParams
+            }else{
+                mPanaView?.layoutParams = originalLayoutParams
             }
-            mPanaView?.layoutParams = layoutParams
+            isFullScreen = !isFullScreen
+
+            updateUI()
+
         }
+
         bottomNavigationView = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation_bar)
     }
 
@@ -215,6 +230,18 @@ class GameMapActivity : BaseActivity() {
             editText_guess?.isEnabled=false
             textView_introduce?.visibility = View.VISIBLE
             textView_systemOutput?.visibility = View.GONE
+            if(isFullScreen){
+                editText_city?.visibility = View.GONE
+                editText_address?.visibility = View.GONE
+                button_search?.visibility= View.GONE
+                textView_introduce?.visibility = View.GONE
+
+            }else{
+                editText_city?.visibility = View.VISIBLE
+                editText_address?.visibility = View.VISIBLE
+                button_search?.visibility= View.VISIBLE
+                textView_introduce?.visibility = View.VISIBLE
+            }
             button_search?.setOnClickListener{
                 goPlace.address = editText_address?.text.toString()
                 getTargetPoint(goPlace.city, goPlace.address,this@GameMapActivity)
@@ -300,6 +327,17 @@ class GameMapActivity : BaseActivity() {
             editText_guess?.isEnabled=true
             textView_systemOutput?.visibility = View.VISIBLE
             textView_introduce?.visibility = View.GONE
+            if(isFullScreen) {
+                textView_guesscity?.visibility = View.GONE
+                editText_guess?.visibility = View.GONE
+                button_guess?.visibility = View.GONE
+                textView_systemOutput?.visibility = View.GONE
+            }else{
+                textView_guesscity?.visibility = View.VISIBLE
+                editText_guess?.visibility = View.VISIBLE
+                button_guess?.visibility = View.VISIBLE
+                textView_systemOutput?.visibility = View.VISIBLE
+            }
             editText_guess?.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     guessPlace.address = v.text.toString()
