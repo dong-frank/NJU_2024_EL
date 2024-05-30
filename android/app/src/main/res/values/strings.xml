@@ -2,5 +2,4 @@
     <string name="app_name">鼠鼠去那儿</string>
     <string name="title_activity_map">MapActivity</string>
 
-    <string name="title_activity_splash_screen">SplashScreenActivity</string>
 </resources>

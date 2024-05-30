@@ -218,12 +218,7 @@ class MainActivity : BaseActivity() {
     }
 
     fun PravicyCheck() {
-        val status = getSharedPreferences("file", MODE_PRIVATE)
-            .getBoolean("AGREE", false)
-        if (status != true) {
-        } else {
-            showPrivacy("privacy.txt") //放在assets目录下的隐私政策文本文件
-        }
+        showPrivacy("privacy.txt") //放在assets目录下的隐私政策文本文件
     }
     override fun onResume() {
         super.onResume()
@@ -289,7 +284,7 @@ class MainActivity : BaseActivity() {
         if(mBMapManager!=null){
             btnPrivacy!!.setEnabled(false)
             val tag = btnPrivacy!!.tag as Boolean
-            mBMapManager!!.setAgreePrivacy(this.applicationContext, !tag)
+            mBMapManager!!.setAgreePrivacy(this.applicationContext, tag)
             Thread { mBMapManager!!.init(MyGeneralListener()) }.start()
             btnPrivacy!!.text = "隐私" + " " + !tag
             btnPrivacy!!.tag = !tag

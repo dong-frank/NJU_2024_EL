@@ -425,7 +425,7 @@ public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
         {
             //Default 23:
-            String name_defalut = "小寨天坑;小寨天坑风景区;小寨天坑景观点";
+            String name_defalut = "天龙天坑;天龙天坑风景区;天龙天坑景观点";
             String city_default = "重庆";
             String address_default = "重庆市武隆区仙女镇";
             String PID_default = "0902920012180322124942000IN";
