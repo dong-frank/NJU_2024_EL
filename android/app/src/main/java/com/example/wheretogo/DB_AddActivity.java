@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * 增加地点界面
+ */
 public class DB_AddActivity extends BaseActivity {
     EditText name_input, city_input, address_input;
     EditText PID_input, intro_input;

@@ -10,6 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * 更新地点界面
+ */
 public class DB_UpdateActivity extends AppCompatActivity {
     EditText name_input2, city_input2, PID_input2;
     EditText address_input2,intro_input2;

@@ -1,5 +1,8 @@
 package com.example.wheretogo;
 
+/**
+ * 地点类
+ */
 public class Place {
     private String[] name;
     private String address;

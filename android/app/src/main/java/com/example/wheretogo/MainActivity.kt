@@ -33,12 +33,10 @@ import kotlin.math.abs
 
 
 /**
- * MainActivity is the entry point of the app.
- * It is the first screen that the user sees when they launch the app.
+ *  主页界面
  */
 class MainActivity : BaseActivity() {
     var mBMapManager: BMapManager? = null
-    //    val context = applicationContext
     private var btnPrivacy: Button? = null
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
@@ -65,7 +63,6 @@ class MainActivity : BaseActivity() {
             }
         })
     }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
     }
@@ -94,30 +91,54 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         val binding = LaunchLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Log.d("MainActivity", "draw launch layout")
-
-        PravicyCheck()
+//        Log.d("MainActivity", "draw launch layout")
+        PravicyCheck() // 隐私设置
 
         btnPrivacy = findViewById<View>(com.example.wheretogo.R.id.request_permission) as Button
         btnPrivacy!!.tag = false
-        //TODO:主菜单按键处理
+        val bottomNavigationView = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(com.example.wheretogo.R.id.bottom_navigation_bar)
+        bottomNavigationView.selectedItemId = com.example.wheretogo.R.id.home
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                com.example.wheretogo.R.id.home -> {
+                    Toast.makeText(this, "主页", Toast.LENGTH_SHORT).show()
+                }
 
+                com.example.wheretogo.R.id.map -> {
+                    Toast.makeText(this, "随便走走吧", Toast.LENGTH_SHORT).show()
+                    GameMapActivity.actionStart(this, false, "data2")
+                    overridePendingTransition(com.example.wheretogo.R.anim.slide_in_right, com.example.wheretogo.R.anim.slide_out_left)
+                }
 
+                com.example.wheretogo.R.id.add -> {
+                    Toast.makeText(this, "鼠鼠去过哪", Toast.LENGTH_SHORT).show()
+                    DB_MainActivity.actionStart(this, "data1", "data2")
+                    overridePendingTransition(com.example.wheretogo.R.anim.slide_in_left, com.example.wheretogo.R.anim.slide_out_right)
+                }
+            }
+            true
+        }
+
+        //主菜单按键处理
+        //开始游戏
         binding.startGame.setOnClickListener {
-            GameMapActivity.actionStart(this, true, "data2")//启动游戏界面,data1和data2是传入的数据
+            GameMapActivity.actionStart(this, true, "data2")//启动游戏界面,true和data2是传入的数据
             Log.d("MainActivity", "Game Start and go to GameActivity")
         }
+        //鼠鼠去过哪里
         binding.sqlite.setOnClickListener {
             val intent =Intent(this, DB_MainActivity::class.java)
             startActivity(intent)
         }
+        //推出游戏
         binding.exit.setOnClickListener {
             Toast.makeText(this, "EXIT!", Toast.LENGTH_SHORT).show()
             ActivityCollector.finishAll()
             Log.d("MainActivity", "Exit")
         }
+
         binding.requestPermission.setOnClickListener {
-            //TODO:权限申请和初始化
+            //权限申请和初始化
             initMap()
             requestPermission()
         }
@@ -125,7 +146,7 @@ class MainActivity : BaseActivity() {
     }
     @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
     fun onClickAgree(v: View?) {
-        //TODO:权限申请和初始化
+        //权限申请和初始化
         initMap()
         requestPermission()
         dialog!!.dismiss()
@@ -205,6 +226,8 @@ class MainActivity : BaseActivity() {
     }
     override fun onResume() {
         super.onResume()
+        val bottomNavigationView = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(com.example.wheretogo.R.id.bottom_navigation_bar)
+        bottomNavigationView.selectedItemId = com.example.wheretogo.R.id.home
     }
 
     override fun onDestroy() {

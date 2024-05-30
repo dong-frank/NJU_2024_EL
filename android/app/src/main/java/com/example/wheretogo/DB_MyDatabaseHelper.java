@@ -11,6 +11,11 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 
+import androidx.annotation.Nullable;
+
+/**
+ * 数据库操作类
+ */
 public class DB_MyDatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;

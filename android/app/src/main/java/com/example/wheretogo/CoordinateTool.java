@@ -1,15 +1,11 @@
 package com.example.wheretogo;
 
-import static com.baidu.mapapi.model.CoordUtil.getDistance;
-
-import android.util.Log;
-
 import com.baidu.lbsapi.tools.CoordinateConverter;
 import com.baidu.lbsapi.tools.Point;
 
 
 /**
- * 坐标工具类
+ * 坐标工具类,删去测算两点距离功能
  */
 public class CoordinateTool {
     private CoordinateTool() {
@@ -58,7 +54,4 @@ public class CoordinateTool {
             return "";
         }
     }
-
-
-
 }

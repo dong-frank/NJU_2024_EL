@@ -1,26 +1,24 @@
 package com.example.wheretogo;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 
+/**
+ * 鼠鼠去过哪里界面
+ */
 public class DB_MainActivity extends BaseActivity{
     // Declarations for interface of MainActivity
 
@@ -39,13 +37,30 @@ public class DB_MainActivity extends BaseActivity{
     ArrayList<String> site_PID,site_intro;
 
     DB_CustomAdapter DBCustomAdapter;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db_main);
         // initializing buttons
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigationView = findViewById(com.example.wheretogo.R.id.bottom_navigation_bar);
+        bottomNavigationView.setSelectedItemId(R.id.map);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.home) {
+                Toast.makeText(this, "返回主界面", Toast.LENGTH_SHORT).show();
+                finish();
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (itemId == R.id.map) {
+                Toast.makeText(this, "随便走走吧", Toast.LENGTH_SHORT).show();
+                GameMapActivity.Companion.actionStart(DB_MainActivity.this, false, "data2");
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else if (itemId == R.id.add) {
+                Toast.makeText(this, "鼠鼠去过哪儿", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
         recyclerView = findViewById(R.id.recyclerView);
         add_button = findViewById(R.id.add_button);
         // clicking event
@@ -106,5 +121,20 @@ public class DB_MainActivity extends BaseActivity{
                 site_intro.add(cursor.getString(5));
             }
         }
+    }
+
+    protected void onDestroy(){
+        super.onDestroy();
+        myDB.close();
+    }
+    protected void onPause(){
+        super.onPause();
+        myDB.close();
+    }
+    protected void onResume(){
+        super.onResume();
+        com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigationView = findViewById(com.example.wheretogo.R.id.bottom_navigation_bar);
+        bottomNavigationView.setSelectedItemId(R.id.add);
+        myDB = new DB_MyDatabaseHelper(DB_MainActivity.this);
     }
 }

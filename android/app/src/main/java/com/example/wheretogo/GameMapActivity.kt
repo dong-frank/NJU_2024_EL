@@ -39,10 +39,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONObject
 import com.baidu.lbsapi.tools.Point as Point1
 
-
+/**
+ * 游戏地图界面
+ */
 class GameMapActivity : BaseActivity() {
     companion object{
-        //TODO:需要传入地图界面的数据
+        //需要传入地图界面的数据：mode
         fun actionStart(context: Context, mode: Boolean, data2: String){
             val intent = Intent(context, GameMapActivity::class.java).apply {
                 putExtra("Mode", mode)
@@ -52,6 +54,7 @@ class GameMapActivity : BaseActivity() {
         }
     }
 
+    //陀螺仪传感器
     private lateinit var sensorManager: SensorManager
     private val sensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
@@ -63,44 +66,45 @@ class GameMapActivity : BaseActivity() {
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         }
     }
-    val myDB_help =DB_MyDatabaseHelper(this)
-
-    var mPanaView: PanoramaView? = null
-    var mSuggestionSearch : SuggestionSearch? = null
-    var editText_city: EditText? = null
-    var editText_address: EditText? = null
-    var editText_guess: EditText? = null
-    var textView_introduce: TextView? = null
-    var textView_systemOutput: TextView? = null
-    var textView_guesscity: TextView? = null
-    var listView: ListView? = null
-    var button_search : Button? = null
-    var button_guess : Button? = null
-    var toolbar: androidx.appcompat.widget.Toolbar? = null
-
+    private val myDB_help =DB_MyDatabaseHelper(this)
+    private var mPanaView: PanoramaView? = null
+    private var mSuggestionSearch : SuggestionSearch? = null
+    private var editText_city: EditText? = null
+    private var editText_address: EditText? = null
+    private var editText_guess: EditText? = null
+    private var textView_introduce: TextView? = null
+    private var textView_systemOutput: TextView? = null
+    private var textView_guesscity: TextView? = null
+    private var listView: ListView? = null
+    private var button_search : Button? = null
+    private var button_guess : Button? = null
+    private var toolbar: androidx.appcompat.widget.Toolbar? = null
+    private var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView? = null
 //    var dtDistance : Double = 0.0
-    var targetPoint : Point1? = null
+    private var targetPoint : Point1? = null
 //    var guessPoint : Point1? = null
-    var isCorrect : Boolean = false
-    var mode : Boolean = true
-    var tryCount =0
+    private var isCorrect : Boolean = false
+    private var mode : Boolean = true
+    private var tryCount =0
 
-    var wherePlace : Place?= null
-    var guessPlace = Place("南京","南京大学")
-    var goPlace = Place("南京","南京大学")
+    private var wherePlace : Place?= null
+    private var guessPlace = Place("南京","南京大学")
+    private var goPlace = Place("南京","南京大学")
     @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @SuppressLint("SetTextI18n", "ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_map_layout)
-        val myDB = DB_MyDatabaseHelper(this)
+        // 相关设置
         mode = intent.getBooleanExtra("Mode", true) //默认为猜测模式,如果是在main界面左滑则进入地图模式
-        myDB.UpdateTourStatus("1",0,myDB.getTotalSitesNumber())
+        myDB_help.ResetTourStatus() //每次进入游戏界面重置游戏进度
         initView()
+
         val intent = intent
         if (intent != null) {
             startPanoView(intent.getIntExtra("type", -1))
         }
+        //顶部toolbar监听器
         toolbar?.setOnMenuItemClickListener() {
             when(it.itemId){
                 R.id.action_add -> {
@@ -112,14 +116,37 @@ class GameMapActivity : BaseActivity() {
             }
             true
         }
+        bottomNavigationView?.selectedItemId = R.id.map
+        bottomNavigationView?.setOnItemSelectedListener{
+            when (it.itemId) {
+                R.id.home -> {
+                    Toast.makeText(this, "返回主界面", Toast.LENGTH_SHORT).show()
+                    finish()
+                    overridePendingTransition(com.example.wheretogo.R.anim.slide_in_left, com.example.wheretogo.R.anim.slide_out_right)
+                }
 
+                R.id.map -> {
+                    Toast.makeText(this, "地图模式", Toast.LENGTH_SHORT).show()
+                    mode = !mode
+                    updateUI()
+                }
+
+                R.id.add -> {
+                    Toast.makeText(this, "添加新地点", Toast.LENGTH_SHORT).show()
+                    DB_MainActivity.actionStart(this, "data1", "data2")
+                    overridePendingTransition(com.example.wheretogo.R.anim.slide_in_left, com.example.wheretogo.R.anim.slide_out_right)
+                }
+            }
+            true
+        }
+
+        //陀螺仪监听器
         sensorManager.registerListener(
             sensorEventListener,
             sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
             SensorManager.SENSOR_DELAY_GAME
         )
-
-        //游戏过程
+        //游戏开始
         gameStart()
         updateUI()
 
@@ -152,6 +179,8 @@ class GameMapActivity : BaseActivity() {
                 return super.onRequestSendAccessibilityEvent(host, child, event)
             }
         }
+        //全屏按钮
+        //TODO:正确的全屏按钮
         val fullscreenButton: FloatingActionButton = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fullscreen_button)
         fullscreenButton.setOnClickListener {
             val layoutParams = mPanaView?.layoutParams
@@ -168,11 +197,12 @@ class GameMapActivity : BaseActivity() {
             }
             mPanaView?.layoutParams = layoutParams
         }
+        bottomNavigationView = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation_bar)
     }
 
     private fun updateUI(){
+        //猜测模式不显示箭头,随意走走模式显示箭头
         mPanaView?.setShowTopoLink(!mode)
-        //猜测正确，显示箭头和其他全景信息
         if(!mode){
             textView_guesscity?.visibility = View.GONE
             textView_systemOutput?.text="随便走走吧"
@@ -185,16 +215,15 @@ class GameMapActivity : BaseActivity() {
             editText_guess?.isEnabled=false
             textView_introduce?.visibility = View.VISIBLE
             textView_systemOutput?.visibility = View.GONE
-            //去那看看按钮
             button_search?.setOnClickListener{
                 goPlace.address = editText_address?.text.toString()
                 getTargetPoint(goPlace.city, goPlace.address,this@GameMapActivity)
-                //经纬度转换为全景
-                Log.i("PanaTool", "change the panorama")
+//                Log.i("PanaTool", "change the panorama")
             }
             editText_city?.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     goPlace.city = editText_city?.text.toString()
+                    //隐藏键盘
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(v.windowToken, 0)
                     editText_city?.clearFocus()
@@ -203,6 +232,22 @@ class GameMapActivity : BaseActivity() {
                     false
                 }
             }
+
+            editText_city?.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    // 输入文字结束时
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // 输入文字前
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // 输入文字中
+                    goPlace.city = s.toString()
+//                    Log.i("PanaTool", goPlace.city.toString())
+                }
+            })
             //监听输入框文本变化
             editText_address?.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -222,16 +267,16 @@ class GameMapActivity : BaseActivity() {
             })
             editText_address?.setOnFocusChangeListener { v, hasFocus ->
                 if(hasFocus){
-                    //获取焦点时
+                    //获取焦点时,显示联想列表
                     listView?.visibility = View.VISIBLE
                 } else {
-                    //失去焦点时
+                    //失去焦点时,隐藏联想列表
                     listView?.visibility = View.GONE
                 }
             }
             editText_address?.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //不点击联想框的时候
+                    //不点击联想框的时候,按回车也能隐藏联想框和键盘
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(v.windowToken, 0)
                     editText_address?.clearFocus()
@@ -255,7 +300,6 @@ class GameMapActivity : BaseActivity() {
             editText_guess?.isEnabled=true
             textView_systemOutput?.visibility = View.VISIBLE
             textView_introduce?.visibility = View.GONE
-            //猜测
             editText_guess?.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     guessPlace.address = v.text.toString()
@@ -293,7 +337,6 @@ class GameMapActivity : BaseActivity() {
                     listView?.visibility = View.GONE
                 }
             }
-            //是这吗按钮
             button_guess?.setOnClickListener {
                 guessPlace.address = editText_guess?.text.toString()
                 //隐藏键盘
@@ -306,8 +349,6 @@ class GameMapActivity : BaseActivity() {
     }
 
     private fun gameStart(){
-        //TODO:从数据库获取信息
-
         val name =myDB_help.nextSiteName
         val city = myDB_help.getSelectedCity(name)
         val address = myDB_help.getSelectedAddress(name)
@@ -329,7 +370,6 @@ class GameMapActivity : BaseActivity() {
     }
 
     private fun continueGame(){
-        //TODO:从下一条数据库中下一条数据获取信息
         gameStart()
         editText_guess?.setText("")
     }
@@ -352,6 +392,7 @@ class GameMapActivity : BaseActivity() {
             }
 
             override fun onLoadPanoramaEnd(json: String) {
+                //如果是随意走走模式,则获取当前位置的pid
                 if (!mode) {
                     val jsonObject = JSONObject(json)
                     wherePlace?.pid = jsonObject.getString("ID")
@@ -377,10 +418,9 @@ class GameMapActivity : BaseActivity() {
 
     fun handleSuggestionResult(suggestionResult: SuggestionResult){
         //获取在线建议检索结果
-        Log.i("PanaTool", "start find the suggestion")
+//        Log.i("PanaTool", "start find the suggestion")
 
         if (suggestionResult.error == SearchResult.ERRORNO.NO_ERROR) {
-            //获取在线建议检索结果
             val suggestions = suggestionResult.allSuggestions
             val suggestionList = ArrayList<String>()
             for(suggestion in suggestions){
@@ -410,11 +450,10 @@ class GameMapActivity : BaseActivity() {
         }
     }
     fun handleGeoCodeResultTarget(geoCodeResult : GeoCodeResult){
-        //获取地理编码检索结果
-        Log.i("PanaTool", "find the location")
+        //获取随便走走地点地理编码检索结果
+//        Log.i("PanaTool", "find the location")
         val latitude = geoCodeResult.location.latitude
         val longitude = geoCodeResult.location.longitude
-
         targetPoint = Point1(longitude,latitude)
         mPanaView?.setPanoramaViewListener(object : PanoramaViewListener {
             override fun onLoadPanoramaBegin() {
@@ -449,8 +488,9 @@ class GameMapActivity : BaseActivity() {
         }
     }
     fun handleGeoCodeResultGuess(geoCodeResult : GeoCodeResult){
-        //获取地理编码检索结果
+        //获取猜测地理编码检索结果
         Log.i("PanaTool", "find the location")
+        //删去了计算距离的部分
 //        val latitude = geoCodeResult.location.latitude
 //        val longitude = geoCodeResult.location.longitude
 //        guessPoint = Point1(longitude,latitude)
@@ -459,15 +499,16 @@ class GameMapActivity : BaseActivity() {
 //        val direction = CoordinateTool.bearingToDirection(CoordinateTool.calculateBearing(guessPoint,targetPoint))
         if(wherePlace?.name?.contains(guessPlace.address) == true) {
             val name = wherePlace?.name!![0].toString()
+            val intro = wherePlace?.intro!!.joinToString("\n")
             textView_systemOutput?.text = "回答正确:$name"
-            //TODO:弹出提示框，继续下一题还是先随便走走
+            //弹出提示框，继续下一题还是先随便走走
             isCorrect=true
             tryCount=0
             AlertDialog.Builder(this).apply {
-                setTitle("This is Dialog")
-                setMessage("恭喜你回答正确")
+                setTitle("恭喜你回答正确")
+                //TODO:检查
+                setMessage(name + "\n" + intro)
                 setCancelable(false)
-                
                 setPositiveButton("继续游戏") { dialog, which ->
                     continueGame()
                 }
@@ -479,11 +520,8 @@ class GameMapActivity : BaseActivity() {
         } else {
             val intro = nextIntro(tryCount)
             tryCount++
-            textView_systemOutput?.text = "回答错误,请再试一次,$intro"
+            textView_systemOutput?.text = "回答错误,提示:$intro"
             isCorrect=false
-            //TODO:提示
-//            textView_introduce?.text=introduce
-            //TODO:提示滚动到下一条
         }
     }
 
@@ -503,16 +541,13 @@ class GameMapActivity : BaseActivity() {
                 dialog.cancel()
             }
             .create()
-
         dialog.show()
-
     }
     private fun handleMapClick() {
-        //TODO:跳转到地图界面
+        //跳转到地图界面
         mode=!mode
         updateUI()
-        //
-        Toast.makeText(this, "跳转到地图界面", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "随便走走吧", Toast.LENGTH_SHORT).show()
     }
     @Override
     override fun onPause() {

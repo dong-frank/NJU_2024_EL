@@ -1,10 +1,6 @@
 package com.example.wheretogo;
 
-import android.location.Geocoder;
-import android.os.Build;
 import android.util.Log;
-
-import com.baidu.lbsapi.panoramaview.PanoramaView;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -37,8 +33,6 @@ public class PanaTool {
                 } else {
                     activity.handleGeoCodeResultTarget(geoCodeResult);
                     Log.i("PanaTool", "find the location");
-
-                    //TODO:经纬度转换为全景
                 }
             }
             @Override
@@ -61,7 +55,6 @@ public class PanaTool {
     }
 
     public static void getGuessPoint(String city ,String address, GameMapActivity activity)  {
-        //TODO:地名转换为经纬度
         GeoCoder mCoder = null;
         mCoder = GeoCoder.newInstance();
         OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -73,7 +66,6 @@ public class PanaTool {
                 } else {
                     activity.handleGeoCodeResultGuess(geoCodeResult);
                     Log.i("PanaTool", "find the location");
-                    //TODO:经纬度转换为全景
                 }
             }
             @Override
