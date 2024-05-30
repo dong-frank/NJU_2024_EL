@@ -4,6 +4,10 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -19,6 +23,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -31,6 +36,7 @@ import com.baidu.mapapi.search.sug.SuggestionSearch
 import com.example.wheretogo.PanaTool.getGuessPoint
 import com.example.wheretogo.PanaTool.getTargetPoint
 import com.example.wheretogo.PanaTool.sugSearch
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONArray
 import org.json.JSONObject
 import com.baidu.lbsapi.tools.Point as Point1
@@ -45,6 +51,18 @@ class GameMapActivity : BaseActivity() {
                 putExtra("param2", data2)
             }
             context.startActivity(intent)
+        }
+    }
+
+    private lateinit var sensorManager: SensorManager
+    private val sensorEventListener = object : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            val scaleFactor = 2f
+            mPanaView?.panoramaPitch = event.values[1]*scaleFactor
+            mPanaView?.panoramaHeading = event.values[0]*scaleFactor
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         }
     }
     val myDB_help =DB_MyDatabaseHelper(this)
@@ -97,6 +115,12 @@ class GameMapActivity : BaseActivity() {
             true
         }
 
+        sensorManager.registerListener(
+            sensorEventListener,
+            sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+            SensorManager.SENSOR_DELAY_GAME
+        )
+
         //游戏过程
         gameStart()
         updateUI()
@@ -105,6 +129,7 @@ class GameMapActivity : BaseActivity() {
     }
     @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private fun initView() {
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mPanaView = findViewById<View>(R.id.panorama) as PanoramaView
         editText_city = findViewById<EditText>(R.id.panodemo_main_input_city)
         editText_address = findViewById<EditText>(R.id.panodemo_main_input_address)
@@ -128,6 +153,22 @@ class GameMapActivity : BaseActivity() {
                 event.text.add("百度全景地图")
                 return super.onRequestSendAccessibilityEvent(host, child, event)
             }
+        }
+        val fullscreenButton: FloatingActionButton = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fullscreen_button)
+        fullscreenButton.setOnClickListener {
+            val layoutParams = mPanaView?.layoutParams
+            if (layoutParams?.width == ViewGroup.LayoutParams.MATCH_PARENT && layoutParams.height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                // 如果已经是全屏，那么恢复原来的大小
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                Log.i("Fullscreen", "Exit fullscreen")
+            } else {
+                // 如果不是全屏，那么设置为全屏
+                layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
+                layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+                Log.i("Fullscreen", "Enter fullscreen")
+            }
+            mPanaView?.layoutParams = layoutParams
         }
     }
 
@@ -489,6 +530,7 @@ class GameMapActivity : BaseActivity() {
     override fun onDestroy() {
         mPanaView?.destroy()
         mSuggestionSearch?.destroy()
+        sensorManager.unregisterListener(sensorEventListener)
         super.onDestroy()
     }
 }
