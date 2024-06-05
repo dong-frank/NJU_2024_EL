@@ -50,7 +50,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="sTA2IIiM9ah2yWeSQBIUl4pgbtlSjaAc" /> <!-- TODO: 横屏和竖屏变化 -->
+            android:value="请输入你的KEY" /> <!-- TODO: 横屏和竖屏变化 -->
         <activity
             android:name=".GameMapActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
